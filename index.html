@@ -205,7 +205,6 @@
     <!-- PESTAÑA 2: VENTAS (FORMULARIO MULTI-PRODUCTO + HISTORIAL) -->
     <div id="tab-ventas" class="tab-content space-y-6">
       
-      <!-- Formulario de Venta Multi-Producto -->
       <section class="glass-card p-4 rounded-2xl border border-emerald-500/30">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-base font-bold text-white flex items-center">
@@ -235,7 +234,7 @@
             <input type="text" id="nombre-nuevo-cliente" placeholder="Ej: Mini Changomas Lomas" class="w-full bg-slate-800 border border-emerald-500/50 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-400">
           </div>
 
-          <!-- SECCIÓN RENGLONES DINÁMICOS DE PRODUCTOS -->
+          <!-- RENGLONES DINÁMICOS DE PRODUCTOS (VENTA) -->
           <div class="space-y-3 pt-1 border-t border-slate-800/80">
             <div class="flex justify-between items-center">
               <label class="block text-xs font-semibold text-slate-300">
@@ -244,16 +243,14 @@
               <span class="text-[10px] text-slate-400">Se agrega otro renglón al elegir</span>
             </div>
 
-            <!-- Contenedor donde se insertan las filas dinámicamente -->
             <div id="contenedor-filas-venta" class="space-y-3"></div>
 
-            <!-- Botón adicional para agregar fila manual -->
             <button type="button" onclick="agregarFilaVenta()" class="w-full py-2 bg-slate-800/70 hover:bg-slate-800 border border-dashed border-emerald-500/40 text-emerald-400 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.99] transition-all">
               <i class="fa-solid fa-plus text-[10px]"></i> Agregar otro producto
             </button>
           </div>
 
-          <!-- RESUMEN EN VIVO DEL TOTAL DEL PEDIDO -->
+          <!-- RESUMEN DEL TOTAL DEL PEDIDO -->
           <div class="p-3.5 rounded-xl bg-slate-900/90 border border-emerald-500/30 flex justify-between items-center shadow-inner">
             <div>
               <span class="text-xs text-slate-400 block font-medium">Total Acumulado</span>
@@ -308,69 +305,61 @@
 
     </div>
 
-    <!-- PESTAÑA 3: STOCK, FORMULARIO, INVENTARIO ACTUAL E HISTORIAL -->
+    <!-- PESTAÑA 3: STOCK (FORMULARIO MULTI-PRODUCTO, INVENTARIO E HISTORIAL) -->
     <div id="tab-stock" class="tab-content space-y-6">
       
-      <!-- 1. Formulario Carga / Reposición -->
+      <!-- 1. FORMULARIO MULTI-PRODUCTO PARA COMPRAS -->
       <section class="glass-card p-4 rounded-2xl border border-blue-500/30">
-        <h2 class="text-base font-bold text-white mb-4 flex items-center">
-          <i class="fa-solid fa-truck-ramp-box text-blue-400 mr-2"></i> Cargar / Reponer Stock
-        </h2>
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-base font-bold text-white flex items-center">
+            <i class="fa-solid fa-truck-ramp-box text-blue-400 mr-2"></i> Cargar / Reponer Stock
+          </h2>
+          <span class="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full">
+            Múltiples productos
+          </span>
+        </div>
         
         <form id="form-compra" class="space-y-4">
           <div>
-            <label class="block text-xs text-slate-400 mb-1">Fecha de Compra</label>
+            <label class="block text-xs text-slate-400 mb-1">Fecha de la Compra</label>
             <input type="date" id="input-compra-fecha" class="w-full max-w-full box-border appearance-none bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500">
           </div>
 
-          <div>
-            <label class="block text-xs text-slate-400 mb-1">Producto</label>
-            <select id="select-compra-producto" onchange="toggleNuevoProducto(this.value)" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500">
-              <option value="">Cargando catálogo...</option>
-              <option value="__NUEVO__" class="text-emerald-400 font-bold">+ Crear Nuevo Producto</option>
-            </select>
+          <!-- RENGLONES DINÁMICOS DE COMPRA -->
+          <div class="space-y-3 pt-1 border-t border-slate-800/80">
+            <div class="flex justify-between items-center">
+              <label class="block text-xs font-semibold text-slate-300">
+                <i class="fa-solid fa-boxes-packing text-blue-400 mr-1"></i> Artículos de la Compra
+              </label>
+              <span class="text-[10px] text-slate-400">Se agrega otro renglón al elegir</span>
+            </div>
+
+            <!-- Contenedor dinámico de filas de compra -->
+            <div id="contenedor-filas-compra" class="space-y-3"></div>
+
+            <button type="button" onclick="agregarFilaCompra()" class="w-full py-2 bg-slate-800/70 hover:bg-slate-800 border border-dashed border-blue-500/40 text-blue-400 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.99] transition-all">
+              <i class="fa-solid fa-plus text-[10px]"></i> Agregar otro producto a la compra
+            </button>
           </div>
 
-          <div id="campo-nuevo-producto" class="hidden space-y-3 p-3 bg-slate-800/60 rounded-xl border border-emerald-500/30">
+          <!-- RESUMEN DEL TOTAL DE LA COMPRA -->
+          <div class="p-3.5 rounded-xl bg-slate-900/90 border border-blue-500/30 flex justify-between items-center shadow-inner">
             <div>
-              <label class="block text-xs text-emerald-400 mb-1 font-medium">Nombre del Nuevo Producto</label>
-              <input type="text" id="input-nuevo-producto-nombre" placeholder="Ej: Manaos Cola 2.25L" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm">
+              <span class="text-xs text-slate-400 block font-medium">Costo Total Compra</span>
+              <span class="text-[10px] text-slate-500" id="label-items-cant-compra">0 productos • 0 bultos totales</span>
             </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs text-emerald-400 mb-1 font-medium">Bultos x Pallet</label>
-                <input type="number" id="input-nuevo-packs-pallet" placeholder="100" value="100" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs text-emerald-400 mb-1 font-medium">Alerta Stock Mínimo</label>
-                <input type="number" id="input-nuevo-stock-minimo" placeholder="20" value="20" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm">
-              </div>
+            <div class="text-2xl font-extrabold text-blue-400" id="label-total-pedido-compra">
+              $ 0
             </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Pallets comprados</label>
-              <input type="number" id="input-compra-pallets" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm">
-            </div>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Bultos sueltos</label>
-              <input type="number" id="input-compra-packs-sueltos" placeholder="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm">
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs text-slate-400 mb-1">Costo Total de Compra ($)</label>
-            <input type="number" id="input-compra-costo" placeholder="Ej: 450000" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-blue-400">
           </div>
 
           <button type="button" onclick="guardarCompra()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
-            <i class="fa-solid fa-plus mr-2"></i> Registrar Compra
+            <i class="fa-solid fa-plus mr-2"></i> Registrar Compra Completa
           </button>
         </form>
       </section>
 
-      <!-- 2. INVENTARIO ACTUAL DISPONIBLE (Compacto) -->
+      <!-- 2. INVENTARIO ACTUAL DISPONIBLE -->
       <section>
         <div class="flex justify-between items-center mb-2.5">
           <h2 class="text-sm font-semibold text-slate-300 flex items-center">
@@ -385,7 +374,7 @@
         </div>
       </section>
 
-      <!-- 3. Historial de Compras -->
+      <!-- 3. HISTORIAL DE COMPRAS -->
       <section>
         <h2 class="text-sm font-semibold text-slate-300 mb-3 flex items-center">
           <i class="fa-solid fa-clock-rotate-left text-blue-400 mr-2"></i> Historial de Compras
@@ -1134,6 +1123,7 @@
       actualizarSelectCategoriasGasto();
       calcularMetricasFinancieras();
       inicializarFilasVenta();
+      inicializarFilasCompra();
     }
 
     // 4. CAMBIO DE PESTAÑAS
@@ -1151,15 +1141,6 @@
 
     function toggleNuevoCliente(val) {
       const campo = document.getElementById('campo-nuevo-cliente');
-      if (val === '__NUEVO__') {
-        campo.classList.remove('hidden');
-      } else {
-        campo.classList.add('hidden');
-      }
-    }
-
-    function toggleNuevoProducto(val) {
-      const campo = document.getElementById('campo-nuevo-producto');
       if (val === '__NUEVO__') {
         campo.classList.remove('hidden');
       } else {
@@ -1524,18 +1505,12 @@
       productosGlobales = productos || [];
 
       const listaStock = document.getElementById('lista-stock-inventario');
-      const selectCompra = document.getElementById('select-compra-producto');
-
       const contAlerta = document.getElementById('contenedor-alerta-stock');
       const badgeAlerta = document.getElementById('badge-alerta-stock-cant');
       const textoAlerta = document.getElementById('texto-alerta-stock');
       const detalleAlerta = document.getElementById('lista-alertas-detalle');
 
       listaStock.innerHTML = '';
-      selectCompra.innerHTML = `
-        <option value="">Seleccionar producto existente...</option>
-        <option value="__NUEVO__" class="text-emerald-400 font-bold">+ Crear Nuevo Producto</option>
-      `;
 
       if (!productos || productos.length === 0) {
         listaStock.innerHTML = '<div class="p-4 text-center text-xs text-slate-500">No hay productos en inventario.</div>';
@@ -1551,9 +1526,7 @@
         const stockMinimo = p.stock_minimo !== undefined && p.stock_minimo !== null ? Number(p.stock_minimo) : 20;
         const esBajoStock = Number(p.stock_packs) <= stockMinimo;
 
-        if (esBajoStock) {
-          productosBajoStock.push(p);
-        }
+        if (esBajoStock) productosBajoStock.push(p);
 
         // Fila compacta en pestaña Stock
         listaStock.innerHTML += `
@@ -1581,11 +1554,9 @@
             </div>
           </div>
         `;
-
-        selectCompra.insertAdjacentHTML('afterbegin', `<option value="${p.id}">${p.nombre}</option>`);
       });
 
-      // ALERTA AL PIE DE INICIO
+      // ALERTA EN INICIO
       if (productosBajoStock.length > 0) {
         contAlerta.classList.remove('hidden');
         badgeAlerta.textContent = `${productosBajoStock.length} producto(s)`;
@@ -1605,10 +1576,17 @@
         contAlerta.classList.add('hidden');
       }
 
-      // Actualizar opciones en los selectores dinámicos ya existentes
+      // Actualizar opciones en los renglones dinámicos de ventas existentes
       document.querySelectorAll('.item-prod-select').forEach(sel => {
         const valActual = sel.value;
-        sel.innerHTML = obtenerOpcionesProductosHTML();
+        sel.innerHTML = obtenerOpcionesProductosVentaHTML();
+        sel.value = valActual;
+      });
+
+      // Actualizar opciones en los renglones dinámicos de compras existentes
+      document.querySelectorAll('.item-compra-prod-select').forEach(sel => {
+        const valActual = sel.value;
+        sel.innerHTML = obtenerOpcionesProductosCompraHTML();
         sel.value = valActual;
       });
     }
@@ -1651,8 +1629,8 @@
       cargarTodo();
     }
 
-    // 9. LÓGICA DE FORMULARIO MULTI-PRODUCTO EN VENTAS
-    function obtenerOpcionesProductosHTML() {
+    // 9. LÓGICA DE VENTAS MULTI-PRODUCTO
+    function obtenerOpcionesProductosVentaHTML() {
       let opts = '<option value="">Seleccionar producto...</option>';
       productosGlobales.forEach(p => {
         opts += `<option value="${p.id}">${p.nombre} (Stock: ${p.stock_packs} bultos)</option>`;
@@ -1685,7 +1663,7 @@
         <div>
           <label class="block text-[10px] text-slate-400 mb-0.5">Producto</label>
           <select class="item-prod-select w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500" onchange="alCambiarProductoFila(this)">
-            ${obtenerOpcionesProductosHTML()}
+            ${obtenerOpcionesProductosVentaHTML()}
           </select>
         </div>
 
@@ -1715,7 +1693,6 @@
       const filas = cont.querySelectorAll('.fila-venta-item');
       const esUltimaFila = (selectElem.closest('.fila-venta-item') === filas[filas.length - 1]);
 
-      // Si seleccionó un producto y está en el último renglón, agrega automáticamente uno nuevo abajo
       if (selectElem.value !== '' && esUltimaFila) {
         agregarFilaVenta();
       }
@@ -1728,7 +1705,6 @@
       const filas = cont.querySelectorAll('.fila-venta-item');
 
       if (filas.length <= 1) {
-        // Si queda una sola fila, se resetea en lugar de eliminarse
         const filaUnica = filas[0];
         filaUnica.querySelector('.item-prod-select').value = '';
         filaUnica.querySelector('.item-pallets').value = '';
@@ -1762,9 +1738,7 @@
         const prodId = f.querySelector('.item-prod-select').value;
         const subtotal = Number(f.querySelector('.item-subtotal').value || 0);
 
-        if (prodId && subtotal > 0) {
-          cantItemsValidos++;
-        }
+        if (prodId && subtotal > 0) cantItemsValidos++;
         total += subtotal;
       });
 
@@ -1772,7 +1746,6 @@
       document.getElementById('label-items-cant').textContent = `${cantItemsValidos} producto(s) cotizado(s)`;
     }
 
-    // GUARDAR VENTA MULTI-PRODUCTO
     async function guardarVenta() {
       const fechaVenta = document.getElementById('input-venta-fecha').value || obtenerFechaLocalISO(new Date());
       let clienteNombre = document.getElementById('select-cliente').value;
@@ -1793,14 +1766,12 @@
       const itemsAGuardar = [];
       const demandaPorProducto = {};
 
-      // 1. Recorrer y parsear cada renglón cargado
       for (const f of filas) {
         const prodId = f.querySelector('.item-prod-select').value;
         const pallets = Number(f.querySelector('.item-pallets').value || 0);
         const packsSueltos = Number(f.querySelector('.item-packs').value || 0);
         const subtotal = Number(f.querySelector('.item-subtotal').value || 0);
 
-        // Si la fila está completamente vacía (por ej la fila automática final sin usar), se ignora
         if (!prodId && pallets === 0 && packsSueltos === 0 && subtotal === 0) continue;
 
         if (!prodId) return alert('Hay un renglón con cantidad o subtotal pero sin producto seleccionado.');
@@ -1828,7 +1799,6 @@
         return alert('Agregá al menos un producto con su cantidad y subtotal para registrar la venta.');
       }
 
-      // 2. Validar stock disponible
       for (const [prodId, packsRequeridos] of Object.entries(demandaPorProducto)) {
         const prod = productosGlobales.find(p => p.id == prodId);
         if (prod && packsRequeridos > prod.stock_packs) {
@@ -1836,13 +1806,11 @@
         }
       }
 
-      // 3. Procesar venta renglón por renglón
       let totalVentaConsolidada = 0;
 
       for (const item of itemsAGuardar) {
         totalVentaConsolidada += item.subtotal;
 
-        // Registrar en Supabase la venta individual
         await db.from('ventas').insert({
           fecha: fechaVenta,
           cliente_nombre: clienteNombre,
@@ -1852,7 +1820,6 @@
           metodo_pago: metodoPago
         });
 
-        // Descontar stock
         const prodActual = productosGlobales.find(p => p.id == item.productoId);
         if (prodActual) {
           await db.from('productos').update({
@@ -1861,7 +1828,6 @@
         }
       }
 
-      // 4. Si fue fiado, actualizar la deuda total del cliente en cuenta corriente
       if (metodoPago === 'cuenta_corriente') {
         const { data: c } = await db.from('clientes').select('*').eq('nombre', clienteNombre).single();
         if (c) {
@@ -2041,74 +2007,271 @@
       cargarTodo();
     }
 
-    // 10. COMPRAS
-    async function guardarCompra() {
-      const fechaCompra = document.getElementById('input-compra-fecha').value || obtenerFechaLocalISO(new Date());
-      let productoId = document.getElementById('select-compra-producto').value;
-      const nuevoNombre = document.getElementById('input-nuevo-producto-nombre').value.trim();
-      const packsPorPalletInput = Number(document.getElementById('input-nuevo-packs-pallet').value || 100);
-      const stockMinimoInput = Number(document.getElementById('input-nuevo-stock-minimo').value || 20);
-      
-      const pallets = Number(document.getElementById('input-compra-pallets').value || 0);
-      const packsSueltos = Number(document.getElementById('input-compra-packs-sueltos').value || 0);
-      const costoTotal = Number(document.getElementById('input-compra-costo').value || 0);
+    // 10. LÓGICA DE COMPRAS MULTI-PRODUCTO
+    function obtenerOpcionesProductosCompraHTML() {
+      let opts = `
+        <option value="">Seleccionar producto existente...</option>
+        <option value="__NUEVO__" class="text-emerald-400 font-bold">+ Crear Nuevo Producto</option>
+      `;
+      productosGlobales.forEach(p => {
+        opts += `<option value="${p.id}">${p.nombre} (Stock actual: ${p.stock_packs} bultos)</option>`;
+      });
+      return opts;
+    }
 
-      if (!productoId) return alert('Seleccioná un producto o elegí crear uno nuevo.');
+    function inicializarFilasCompra() {
+      const cont = document.getElementById('contenedor-filas-compra');
+      cont.innerHTML = '';
+      agregarFilaCompra();
+    }
 
-      let packsPorPallet = 100;
-      let prodActual = null;
+    function agregarFilaCompra() {
+      const cont = document.getElementById('contenedor-filas-compra');
+      const numFila = cont.children.length + 1;
 
-      if (productoId === '__NUEVO__') {
-        if (!nuevoNombre) return alert('Escribí el nombre del nuevo producto.');
-        packsPorPallet = packsPorPalletInput;
+      const div = document.createElement('div');
+      div.className = 'fila-compra-item glass-card p-3 rounded-xl border border-slate-700/80 space-y-2.5 relative transition-all';
+      div.innerHTML = `
+        <div class="flex justify-between items-center pb-1 border-b border-slate-800">
+          <span class="text-xs font-bold text-blue-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-box-open text-[11px]"></i> Artículo #${numFila}
+          </span>
+          <button type="button" onclick="eliminarFilaCompra(this)" class="text-slate-500 hover:text-rose-400 p-1 rounded transition-colors text-xs" title="Quitar producto">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
 
-        const { data: nuevoProd, error } = await db.from('productos').insert({
-          nombre: nuevoNombre,
-          packs_por_pallet: packsPorPallet,
-          stock_packs: 0,
-          precio_costo_pack: 0,
-          stock_minimo: stockMinimoInput
-        }).select().single();
+        <div>
+          <label class="block text-[10px] text-slate-400 mb-0.5">Producto</label>
+          <select class="item-compra-prod-select w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500" onchange="alCambiarProductoCompra(this)">
+            ${obtenerOpcionesProductosCompraHTML()}
+          </select>
+        </div>
 
-        if (error) return alert('Error al crear producto en Supabase: ' + error.message);
-        prodActual = nuevoProd;
-        productoId = nuevoProd.id;
+        <!-- Campos dinámicos si se crea un producto nuevo en este renglón -->
+        <div class="campo-fila-nuevo-producto hidden space-y-2.5 p-2.5 bg-slate-800/60 rounded-xl border border-emerald-500/30">
+          <div>
+            <label class="block text-[10px] text-emerald-400 mb-0.5 font-medium">Nombre del Nuevo Producto</label>
+            <input type="text" class="item-nuevo-nombre w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-slate-100 placeholder-slate-500" placeholder="Ej: Manaos Cola 2.25L">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[10px] text-emerald-400 mb-0.5 font-medium">Bultos x Pallet</label>
+              <input type="number" class="item-nuevo-pallet-packs w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-slate-100" placeholder="100" value="100" oninput="recalcularTotalCompra()">
+            </div>
+            <div>
+              <label class="block text-[10px] text-emerald-400 mb-0.5 font-medium">Alerta Stock Mínimo</label>
+              <input type="number" class="item-nuevo-stock-minimo w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-slate-100" placeholder="20" value="20">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-0.5">Pallets</label>
+            <input type="number" class="item-compra-pallets w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-slate-200 focus:outline-none" placeholder="0" min="0" oninput="recalcularTotalCompra()">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-0.5">Bultos sueltos</label>
+            <input type="number" class="item-compra-packs w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-slate-200 focus:outline-none" placeholder="0" min="0" oninput="recalcularTotalCompra()">
+          </div>
+          <div>
+            <label class="block text-[10px] text-blue-400 font-bold mb-0.5">Costo Total ($)</label>
+            <input type="number" class="item-compra-costo w-full bg-slate-800 border border-blue-500/40 rounded-lg p-2 text-xs font-bold text-blue-400 focus:outline-none" placeholder="0" min="0" oninput="recalcularTotalCompra()">
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-[10px] text-slate-400 px-1 pt-0.5">
+          <span class="item-compra-resumen-cant">0 bultos totales</span>
+          <span class="item-compra-costo-unitario font-medium text-violet-400">Costo: $0.00 / bulto</span>
+        </div>
+      `;
+
+      cont.appendChild(div);
+      renumerarFilasCompra();
+      recalcularTotalCompra();
+    }
+
+    function alCambiarProductoCompra(selectElem) {
+      const fila = selectElem.closest('.fila-compra-item');
+      const campoNuevo = fila.querySelector('.campo-fila-nuevo-producto');
+
+      if (selectElem.value === '__NUEVO__') {
+        campoNuevo.classList.remove('hidden');
       } else {
-        const { data: prod } = await db.from('productos').select('*').eq('id', productoId).single();
-        prodActual = prod;
-        packsPorPallet = prod.packs_por_pallet || 100;
+        campoNuevo.classList.add('hidden');
       }
 
-      const totalPacksComprados = (pallets * packsPorPallet) + packsSueltos;
+      const cont = document.getElementById('contenedor-filas-compra');
+      const filas = cont.querySelectorAll('.fila-compra-item');
+      const esUltimaFila = (fila === filas[filas.length - 1]);
 
-      if (totalPacksComprados <= 0 || costoTotal <= 0) {
-        return alert('Ingresá la cantidad comprada (pallets o bultos) y el costo total.');
+      if (selectElem.value !== '' && esUltimaFila) {
+        agregarFilaCompra();
       }
 
-      const costoUnitarioPack = Number((costoTotal / totalPacksComprados).toFixed(2));
-      const nuevoStock = prodActual.stock_packs + totalPacksComprados;
+      recalcularTotalCompra();
+    }
 
-      await db.from('productos').update({ 
-        stock_packs: nuevoStock,
-        precio_costo_pack: costoUnitarioPack
-      }).eq('id', productoId);
+    function eliminarFilaCompra(btnElem) {
+      const cont = document.getElementById('contenedor-filas-compra');
+      const filas = cont.querySelectorAll('.fila-compra-item');
 
-      const { error: errorCompra } = await db.from('compras').insert({
-        producto_nombre: prodActual.nombre,
-        cantidad_packs: totalPacksComprados,
-        costo_total: costoTotal,
-        fecha: fechaCompra
+      if (filas.length <= 1) {
+        const filaUnica = filas[0];
+        filaUnica.querySelector('.item-compra-prod-select').value = '';
+        filaUnica.querySelector('.campo-fila-nuevo-producto').classList.add('hidden');
+        filaUnica.querySelector('.item-compra-pallets').value = '';
+        filaUnica.querySelector('.item-compra-packs').value = '';
+        filaUnica.querySelector('.item-compra-costo').value = '';
+        filaUnica.querySelector('.item-nuevo-nombre').value = '';
+      } else {
+        btnElem.closest('.fila-compra-item').remove();
+      }
+
+      renumerarFilasCompra();
+      recalcularTotalCompra();
+    }
+
+    function renumerarFilasCompra() {
+      const cont = document.getElementById('contenedor-filas-compra');
+      const filas = cont.querySelectorAll('.fila-compra-item');
+      filas.forEach((f, idx) => {
+        const tag = f.querySelector('.text-blue-400');
+        if (tag) tag.innerHTML = `<i class="fa-solid fa-box-open text-[11px]"></i> Artículo #${idx + 1}`;
+      });
+    }
+
+    function recalcularTotalCompra() {
+      const cont = document.getElementById('contenedor-filas-compra');
+      const filas = cont.querySelectorAll('.fila-compra-item');
+
+      let costoTotalGlobal = 0;
+      let bultosTotalesGlobal = 0;
+      let cantItemsValidos = 0;
+
+      filas.forEach(f => {
+        const prodId = f.querySelector('.item-compra-prod-select').value;
+        const pallets = Number(f.querySelector('.item-compra-pallets').value || 0);
+        const packsSueltos = Number(f.querySelector('.item-compra-packs').value || 0);
+        const costo = Number(f.querySelector('.item-compra-costo').value || 0);
+
+        let packsPorPallet = 100;
+        if (prodId === '__NUEVO__') {
+          packsPorPallet = Number(f.querySelector('.item-nuevo-pallet-packs').value || 100);
+        } else if (prodId) {
+          const prod = productosGlobales.find(p => p.id == prodId);
+          if (prod) packsPorPallet = prod.packs_por_pallet || 100;
+        }
+
+        const bultosFila = (pallets * packsPorPallet) + packsSueltos;
+        const costoUnitarioFila = bultosFila > 0 ? (costo / bultosFila).toFixed(2) : '0.00';
+
+        f.querySelector('.item-compra-resumen-cant').textContent = `${bultosFila} bultos totales`;
+        f.querySelector('.item-compra-costo-unitario').textContent = `Costo: $${costoUnitarioFila} / bulto`;
+
+        if (prodId && (bultosFila > 0 || costo > 0)) cantItemsValidos++;
+        costoTotalGlobal += costo;
+        bultosTotalesGlobal += bultosFila;
       });
 
-      if (errorCompra) {
-        alert('Error al registrar compra: ' + errorCompra.message);
-        return;
+      document.getElementById('label-total-pedido-compra').textContent = `$ ${Math.round(costoTotalGlobal).toLocaleString()}`;
+      document.getElementById('label-items-cant-compra').textContent = `${cantItemsValidos} producto(s) • ${bultosTotalesGlobal} bultos totales`;
+    }
+
+    async function guardarCompra() {
+      const fechaCompra = document.getElementById('input-compra-fecha').value || obtenerFechaLocalISO(new Date());
+      const cont = document.getElementById('contenedor-filas-compra');
+      const filas = cont.querySelectorAll('.fila-compra-item');
+
+      const itemsAGuardar = [];
+
+      for (const f of filas) {
+        let prodId = f.querySelector('.item-compra-prod-select').value;
+        const pallets = Number(f.querySelector('.item-compra-pallets').value || 0);
+        const packsSueltos = Number(f.querySelector('.item-compra-packs').value || 0);
+        const costo = Number(f.querySelector('.item-compra-costo').value || 0);
+
+        if (!prodId && pallets === 0 && packsSueltos === 0 && costo === 0) continue;
+
+        if (!prodId) return alert('Hay un renglón con bultos o costo sin producto seleccionado.');
+        if (costo <= 0) return alert('Verificá los costos: cada producto ingresado debe tener un costo mayor a $0.');
+
+        let prodActual = null;
+        let packsPorPallet = 100;
+
+        if (prodId === '__NUEVO__') {
+          const nuevoNombre = f.querySelector('.item-nuevo-nombre').value.trim();
+          packsPorPallet = Number(f.querySelector('.item-nuevo-pallet-packs').value || 100);
+          const stockMin = Number(f.querySelector('.item-nuevo-stock-minimo').value || 20);
+
+          if (!nuevoNombre) return alert('Escribí el nombre del nuevo producto en el renglón correspondiente.');
+
+          const totalPacks = (pallets * packsPorPallet) + packsSueltos;
+          if (totalPacks <= 0) return alert(`Ingresá la cantidad de bultos o pallets comprados para "${nuevoNombre}".`);
+
+          const costoUnit = Number((costo / totalPacks).toFixed(2));
+
+          const { data: nuevoProd, error: errNuevo } = await db.from('productos').insert({
+            nombre: nuevoNombre,
+            packs_por_pallet: packsPorPallet,
+            stock_packs: 0,
+            precio_costo_pack: costoUnit,
+            stock_minimo: stockMin
+          }).select().single();
+
+          if (errNuevo) return alert('Error al crear producto en Supabase: ' + errNuevo.message);
+
+          prodActual = nuevoProd;
+          prodId = nuevoProd.id;
+        } else {
+          prodActual = productosGlobales.find(p => p.id == prodId);
+          if (!prodActual) continue;
+          packsPorPallet = prodActual.packs_por_pallet || 100;
+        }
+
+        const totalPacks = (pallets * packsPorPallet) + packsSueltos;
+        if (totalPacks <= 0) return alert(`Ingresá la cantidad de bultos o pallets comprados para "${prodActual.nombre}".`);
+
+        itemsAGuardar.push({
+          productoId: prodId,
+          productoNombre: prodActual.nombre,
+          cantidadPacks: totalPacks,
+          costoTotal: costo,
+          stockPrevio: prodActual.stock_packs || 0
+        });
       }
 
-      mostrarNotificacion('¡Compra registrada con éxito!');
+      if (itemsAGuardar.length === 0) {
+        return alert('Agregá al menos un producto con su cantidad y costo para registrar la compra.');
+      }
+
+      for (const item of itemsAGuardar) {
+        const costoUnitarioPack = Number((item.costoTotal / item.cantidadPacks).toFixed(2));
+        const nuevoStock = item.stockPrevio + item.cantidadPacks;
+
+        await db.from('productos').update({
+          stock_packs: nuevoStock,
+          precio_costo_pack: costoUnitarioPack
+        }).eq('id', item.productoId);
+
+        const { error: errCompra } = await db.from('compras').insert({
+          producto_nombre: item.productoNombre,
+          cantidad_packs: item.cantidadPacks,
+          costo_total: item.costoTotal,
+          fecha: fechaCompra
+        });
+
+        if (errCompra) {
+          alert('Error al registrar compra: ' + errCompra.message);
+          return;
+        }
+      }
+
+      mostrarNotificacion(`¡Compra de ${itemsAGuardar.length} producto(s) registrada con éxito!`);
       document.getElementById('form-compra').reset();
       document.getElementById('input-compra-fecha').value = obtenerFechaLocalISO(new Date());
-      document.getElementById('campo-nuevo-producto').classList.add('hidden');
+      inicializarFilasCompra();
       cargarTodo();
     }
 
@@ -2156,7 +2319,7 @@
       });
     }
 
-    // MODAL EDICIÓN Y ELIMINACIÓN DE COMPRA
+    // MODAL EDICIÓN Y ELIMINACIÓN DE COMPRA INDIVIDUAL
     function abrirModalEditarCompra(id) {
       const c = comprasGlobales.find(item => item.id === id);
       if (!c) return;
