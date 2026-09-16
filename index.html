@@ -50,7 +50,7 @@
 
   <main class="p-4 max-w-lg mx-auto">
 
-    <!-- PESTAÑA 1: INICIO (TABLERO FINANCIERO CON ALERTA AL FINAL) -->
+    <!-- PESTAÑA 1: INICIO (TABLERO FINANCIERO, RENDIMIENTO POR PRODUCTO Y ALERTA) -->
     <div id="tab-inicio" class="tab-content active space-y-4">
       
       <!-- Selector de Modo: Día / Semana / Mes / Todo -->
@@ -181,6 +181,24 @@
         </div>
         <div class="text-right">
           <div class="text-base font-bold text-amber-400" id="metric-por-cobrar">$ 0</div>
+        </div>
+      </section>
+
+      <!-- NUEVO: RENDIMIENTO DE VENTAS POR PRODUCTO (OPCIÓN 3) -->
+      <section>
+        <div class="flex justify-between items-center mb-2.5">
+          <h2 class="text-sm font-semibold text-slate-300 flex items-center">
+            <i class="fa-solid fa-chart-simple text-cyan-400 mr-2"></i> Ventas por Producto
+          </h2>
+          <span id="badge-total-bultos-periodo" class="text-[10px] text-cyan-300 bg-cyan-500/10 border border-cyan-500/30 px-2 py-0.5 rounded-full font-medium">
+            0 bultos totales
+          </span>
+        </div>
+
+        <div class="glass-card rounded-2xl border border-slate-800/80 overflow-hidden shadow-lg">
+          <div id="lista-rendimiento-productos" class="divide-y divide-slate-800/60">
+            <div class="p-4 text-center text-xs text-slate-500">Cargando ventas del período...</div>
+          </div>
         </div>
       </section>
 
@@ -1255,7 +1273,7 @@
       }
     }
 
-    // 6. MOTOR DE CÁLCULO FINANCIERO
+    // 6. MOTOR DE CÁLCULO FINANCIERO Y RANKING DE PRODUCTOS
     function calcularMetricasFinancieras() {
       const ventasPeriodo = ventasGlobales.filter(v => coincidePeriodoActual(v.fecha || v.created_at));
 
@@ -1268,14 +1286,24 @@
       let costoMercaderiaVendida = 0;
       let cantidadBultosVendidos = 0;
 
+      // Agrupación para el ranking de productos en este período
+      const ventasPorProducto = {};
+
       ventasPeriodo.forEach(v => {
         const monto = Number(v.monto_total || 0);
         const bultos = Number(v.cantidad_packs || 0);
         const costoUnitario = mapaCostos[v.producto_nombre] || 0;
+        const prod = v.producto_nombre || 'Producto';
 
         ventasTotales += monto;
         costoMercaderiaVendida += (bultos * costoUnitario);
         cantidadBultosVendidos += bultos;
+
+        if (!ventasPorProducto[prod]) {
+          ventasPorProducto[prod] = { bultos: 0, total: 0 };
+        }
+        ventasPorProducto[prod].bultos += bultos;
+        ventasPorProducto[prod].total += monto;
       });
 
       const gastosPeriodo = gastosGlobales.filter(g => coincidePeriodoActual(g.fecha || g.created_at));
@@ -1300,6 +1328,51 @@
       document.getElementById('metric-costo-mercaderia').textContent = `$ ${Math.round(costoMercaderiaVendida).toLocaleString()}`;
       document.getElementById('metric-ganancia-bruta').textContent = `$ ${Math.round(gananciaBruta).toLocaleString()}`;
       document.getElementById('metric-gastos-totales').textContent = `$ ${Math.round(gastosTotales).toLocaleString()}`;
+
+      // RENDERIZADO DEL RANKING DE PRODUCTOS VENDIDOS
+      const listaRendimiento = document.getElementById('lista-rendimiento-productos');
+      const badgeTotalBultos = document.getElementById('badge-total-bultos-periodo');
+      badgeTotalBultos.textContent = `${cantidadBultosVendidos} bultos totales`;
+
+      const ranking = Object.entries(ventasPorProducto)
+        .map(([nombre, datos]) => ({ nombre, ...datos }))
+        .sort((a, b) => b.bultos - a.bultos);
+
+      if (ranking.length === 0) {
+        listaRendimiento.innerHTML = '<div class="p-4 text-center text-xs text-slate-500">No se registraron ventas en este período.</div>';
+      } else {
+        listaRendimiento.innerHTML = '';
+        ranking.forEach((item, index) => {
+          const prodObj = productosGlobales.find(p => p.nombre === item.nombre);
+          const packsPallet = prodObj?.packs_por_pallet || 100;
+          const pallets = (item.bultos / packsPallet).toFixed(1);
+
+          let medalla = `<span class="text-xs font-bold text-slate-400">#${index + 1}</span>`;
+          if (index === 0) medalla = `<span class="text-sm">🥇</span>`;
+          else if (index === 1) medalla = `<span class="text-sm">🥈</span>`;
+          else if (index === 2) medalla = `<span class="text-sm">🥉</span>`;
+
+          listaRendimiento.innerHTML += `
+            <div class="p-3 flex items-center justify-between hover:bg-slate-800/30 transition-colors">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700/80 flex items-center justify-center font-bold">
+                  ${medalla}
+                </div>
+                <div>
+                  <div class="font-semibold text-sm text-slate-100">${item.nombre}</div>
+                  <div class="text-[11px] text-slate-400">Facturado: $ ${Math.round(item.total).toLocaleString()}</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-sm font-bold text-cyan-400">
+                  ${item.bultos} <span class="text-[11px] font-normal text-slate-400">Bultos</span>
+                </div>
+                <div class="text-[11px] text-emerald-400 font-medium">~${pallets} Pallets</div>
+              </div>
+            </div>
+          `;
+        });
+      }
     }
 
     // 7. MODAL DETALLE / DRILL-DOWN
@@ -1628,7 +1701,7 @@
       cargarTodo();
     }
 
-    // 9. LÓGICA DE VENTAS MULTI-PRODUCTO (FORMATO CLÁSICO)
+    // 9. LÓGICA DE VENTAS MULTI-PRODUCTO (FORMATO CLÁSICO LIMPIO)
     function obtenerOpcionesProductosVentaHTML() {
       let opts = '<option value="">Seleccionar producto...</option>';
       productosGlobales.forEach(p => {
@@ -2006,7 +2079,7 @@
       cargarTodo();
     }
 
-    // 10. LÓGICA DE COMPRAS MULTI-PRODUCTO (FORMATO CLÁSICO)
+    // 10. LÓGICA DE COMPRAS MULTI-PRODUCTO (FORMATO CLÁSICO LIMPIO)
     function obtenerOpcionesProductosCompraHTML() {
       let opts = `
         <option value="">Seleccionar producto existente...</option>
