@@ -334,7 +334,6 @@
               <span class="text-[10px] text-slate-400">Se agrega otro renglón al elegir</span>
             </div>
 
-            <!-- Contenedor dinámico de filas de compra -->
             <div id="contenedor-filas-compra" class="space-y-3"></div>
 
             <button type="button" onclick="agregarFilaCompra()" class="w-full py-2 bg-slate-800/70 hover:bg-slate-800 border border-dashed border-blue-500/40 text-blue-400 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.99] transition-all">
@@ -1629,11 +1628,15 @@
       cargarTodo();
     }
 
-    // 9. LÓGICA DE VENTAS MULTI-PRODUCTO
+    // 9. LÓGICA DE VENTAS MULTI-PRODUCTO (CON STOCK ALINEADO A LA DERECHA)
     function obtenerOpcionesProductosVentaHTML() {
       let opts = '<option value="">Seleccionar producto...</option>';
       productosGlobales.forEach(p => {
-        opts += `<option value="${p.id}">${p.nombre} (Stock: ${p.stock_packs} bultos)</option>`;
+        const nombre = p.nombre || '';
+        const stock = p.stock_packs ?? 0;
+        // Espaciador con caracteres no separables (\u00A0) para empujar el stock al margen derecho
+        const relleno = '\u00A0'.repeat(Math.max(4, 26 - nombre.length));
+        opts += `<option value="${p.id}">${nombre}${relleno}──\u00A0Stock:\u00A0${stock}\u00A0bultos</option>`;
       });
       return opts;
     }
@@ -1661,7 +1664,10 @@
         </div>
 
         <div>
-          <label class="block text-[10px] text-slate-400 mb-0.5">Producto</label>
+          <div class="flex justify-between items-center mb-0.5">
+            <label class="block text-[10px] text-slate-400">Producto</label>
+            <span class="item-stock-badge text-[10px] text-emerald-400 font-semibold hidden"></span>
+          </div>
           <select class="item-prod-select w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500" onchange="alCambiarProductoFila(this)">
             ${obtenerOpcionesProductosVentaHTML()}
           </select>
@@ -1689,9 +1695,21 @@
     }
 
     function alCambiarProductoFila(selectElem) {
+      const fila = selectElem.closest('.fila-venta-item');
+      const badge = fila.querySelector('.item-stock-badge');
+      const prod = productosGlobales.find(p => p.id == selectElem.value);
+
+      // Muestra una placa con el stock disponible directo en la tarjeta
+      if (prod && badge) {
+        badge.textContent = `Stock: ${prod.stock_packs} bultos`;
+        badge.classList.remove('hidden');
+      } else if (badge) {
+        badge.classList.add('hidden');
+      }
+
       const cont = document.getElementById('contenedor-filas-venta');
       const filas = cont.querySelectorAll('.fila-venta-item');
-      const esUltimaFila = (selectElem.closest('.fila-venta-item') === filas[filas.length - 1]);
+      const esUltimaFila = (fila === filas[filas.length - 1]);
 
       if (selectElem.value !== '' && esUltimaFila) {
         agregarFilaVenta();
@@ -1710,6 +1728,8 @@
         filaUnica.querySelector('.item-pallets').value = '';
         filaUnica.querySelector('.item-packs').value = '';
         filaUnica.querySelector('.item-subtotal').value = '';
+        const badge = filaUnica.querySelector('.item-stock-badge');
+        if (badge) badge.classList.add('hidden');
       } else {
         btnElem.closest('.fila-venta-item').remove();
       }
@@ -2007,14 +2027,17 @@
       cargarTodo();
     }
 
-    // 10. LÓGICA DE COMPRAS MULTI-PRODUCTO
+    // 10. LÓGICA DE COMPRAS MULTI-PRODUCTO (CON STOCK ALINEADO A LA DERECHA)
     function obtenerOpcionesProductosCompraHTML() {
       let opts = `
         <option value="">Seleccionar producto existente...</option>
         <option value="__NUEVO__" class="text-emerald-400 font-bold">+ Crear Nuevo Producto</option>
       `;
       productosGlobales.forEach(p => {
-        opts += `<option value="${p.id}">${p.nombre} (Stock actual: ${p.stock_packs} bultos)</option>`;
+        const nombre = p.nombre || '';
+        const stock = p.stock_packs ?? 0;
+        const relleno = '\u00A0'.repeat(Math.max(4, 26 - nombre.length));
+        opts += `<option value="${p.id}">${nombre}${relleno}──\u00A0Stock:\u00A0${stock}\u00A0bultos</option>`;
       });
       return opts;
     }
@@ -2042,7 +2065,10 @@
         </div>
 
         <div>
-          <label class="block text-[10px] text-slate-400 mb-0.5">Producto</label>
+          <div class="flex justify-between items-center mb-0.5">
+            <label class="block text-[10px] text-slate-400">Producto</label>
+            <span class="item-compra-stock-badge text-[10px] text-blue-400 font-semibold hidden"></span>
+          </div>
           <select class="item-compra-prod-select w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500" onchange="alCambiarProductoCompra(this)">
             ${obtenerOpcionesProductosCompraHTML()}
           </select>
@@ -2095,11 +2121,20 @@
     function alCambiarProductoCompra(selectElem) {
       const fila = selectElem.closest('.fila-compra-item');
       const campoNuevo = fila.querySelector('.campo-fila-nuevo-producto');
+      const badge = fila.querySelector('.item-compra-stock-badge');
 
       if (selectElem.value === '__NUEVO__') {
         campoNuevo.classList.remove('hidden');
+        if (badge) badge.classList.add('hidden');
       } else {
         campoNuevo.classList.add('hidden');
+        const prod = productosGlobales.find(p => p.id == selectElem.value);
+        if (prod && badge) {
+          badge.textContent = `Stock: ${prod.stock_packs} bultos`;
+          badge.classList.remove('hidden');
+        } else if (badge) {
+          badge.classList.add('hidden');
+        }
       }
 
       const cont = document.getElementById('contenedor-filas-compra');
@@ -2125,6 +2160,8 @@
         filaUnica.querySelector('.item-compra-packs').value = '';
         filaUnica.querySelector('.item-compra-costo').value = '';
         filaUnica.querySelector('.item-nuevo-nombre').value = '';
+        const badge = filaUnica.querySelector('.item-compra-stock-badge');
+        if (badge) badge.classList.add('hidden');
       } else {
         btnElem.closest('.fila-compra-item').remove();
       }
