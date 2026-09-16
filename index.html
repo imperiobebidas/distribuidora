@@ -113,7 +113,7 @@
         </div>
       </section>
 
-      <!-- Desglose Financiero en 4 Bloques (Todos Clickables) -->
+      <!-- Desglose Financiero en 4 Bloques (Clickables) -->
       <section class="grid grid-cols-2 gap-3">
         
         <!-- Facturación Total -->
@@ -184,11 +184,11 @@
         </div>
       </section>
 
-      <!-- Stock Disponible en Camión con Alerta y Configuración -->
+      <!-- Stock Disponible en Camión (Tarjeta Única Compacta) -->
       <section>
-        <div class="flex justify-between items-center mb-2">
-          <h2 class="text-sm font-semibold text-slate-300">
-            <i class="fa-solid fa-boxes-stacked text-blue-400 mr-1.5"></i> Stock Disponible en Camión
+        <div class="flex justify-between items-center mb-2.5">
+          <h2 class="text-sm font-semibold text-slate-300 flex items-center">
+            <i class="fa-solid fa-boxes-stacked text-blue-400 mr-2"></i> Stock Disponible en Camión
           </h2>
         </div>
 
@@ -198,8 +198,11 @@
           <span id="texto-alerta-stock"></span>
         </div>
 
-        <div class="space-y-2.5" id="lista-stock-inicio">
-          <p class="text-xs text-slate-500">Cargando inventario...</p>
+        <!-- Única tarjeta contenedora unificada -->
+        <div class="glass-card rounded-2xl border border-slate-800/80 overflow-hidden shadow-lg">
+          <div id="lista-stock-inicio" class="divide-y divide-slate-800/60">
+            <div class="p-4 text-center text-xs text-slate-500">Cargando inventario...</div>
+          </div>
         </div>
       </section>
 
@@ -877,7 +880,7 @@
   </nav>
 
   <script>
-    // 1. CONEXIÓN A SUPABASE
+    // 1. CONEXIÓN A SUPABASE (Asegurate de colocar la URL y Key de tu nueva cuenta)
     const SUPABASE_URL = 'https://yfievpplxdvirblqedsw.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_oYjxByiDy_GXjqxaVsWNXg_qMBKahMS';
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -1489,7 +1492,7 @@
       document.getElementById('modal-detalle-financiero').classList.add('hidden');
     }
 
-    // 8. LEER PRODUCTOS CON SISTEMA DE ALERTA DE STOCK BAJO
+    // 8. LEER PRODUCTOS (VISTA EN LISTA UNIFICADA COMPACTA)
     async function cargarProductos() {
       const { data: productos, error } = await db.from('productos').select('*');
       if (error) console.error('Error al cargar productos:', error);
@@ -1510,7 +1513,7 @@
       `;
 
       if (!productos || productos.length === 0) {
-        listaInicio.innerHTML = '<p class="text-xs text-slate-500">No hay productos en inventario.</p>';
+        listaInicio.innerHTML = '<div class="p-4 text-center text-xs text-slate-500">No hay productos en inventario.</div>';
         bannerAlerta.classList.add('hidden');
         return;
       }
@@ -1525,35 +1528,29 @@
 
         if (esBajoStock) productosBajoStock++;
 
-        const cardStyle = esBajoStock 
-          ? 'glass-card p-3 rounded-xl flex items-center justify-between border border-rose-500/50 bg-rose-500/5' 
-          : 'glass-card p-3 rounded-xl flex items-center justify-between border border-slate-800';
-
-        const badgeAlerta = esBajoStock 
-          ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-rose-400 bg-rose-500/20 px-2 py-0.5 rounded-full border border-rose-500/30">
-               <i class="fa-solid fa-triangle-exclamation text-[9px]"></i> Stock Bajo (Mín: ${stockMinimo})
-             </span>`
-          : `<span class="text-[11px] text-emerald-400 font-medium">~${pallets} Pallets</span>`;
-
+        // Fila compacta integrada dentro de la tarjeta contenedora única
         listaInicio.innerHTML += `
-          <div class="${cardStyle}">
+          <div class="p-3 flex items-center justify-between hover:bg-slate-800/30 transition-colors ${esBajoStock ? 'bg-rose-500/5' : ''}">
             <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 rounded-lg ${esBajoStock ? 'bg-rose-500/20 border border-rose-500/30 text-rose-400' : 'bg-blue-500/10 border border-blue-500/20 text-blue-400'} flex items-center justify-center font-bold text-lg">
+              <div class="w-9 h-9 rounded-lg ${esBajoStock ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'} flex items-center justify-center font-bold text-base">
                 🥤
               </div>
               <div>
-                <div class="font-semibold text-sm flex items-center gap-1.5">
+                <div class="font-semibold text-sm text-slate-100 flex items-center gap-1.5">
                   <span>${p.nombre}</span>
-                  <button onclick="abrirModalEditarProducto(${p.id})" title="Configurar stock mínimo y datos" class="text-slate-500 hover:text-blue-400 active:scale-95 transition-all text-xs p-1">
-                    <i class="fa-solid fa-sliders"></i>
+                  ${esBajoStock ? '<span class="text-[9px] bg-rose-500/20 text-rose-300 border border-rose-500/30 px-1.5 py-0.5 rounded font-medium">Bajo stock</span>' : ''}
+                  <button onclick="abrirModalEditarProducto(${p.id})" title="Configurar producto" class="text-slate-500 hover:text-blue-400 active:scale-95 transition-all text-xs p-0.5">
+                    <i class="fa-solid fa-sliders text-[11px]"></i>
                   </button>
                 </div>
-                <div class="text-xs text-slate-400">${pPorPallet} bultos x pallet • Costo: $${p.precio_costo_pack || 0}</div>
+                <div class="text-[11px] text-slate-400">${pPorPallet} bultos x pallet • Costo: $${p.precio_costo_pack || 0}</div>
               </div>
             </div>
             <div class="text-right">
-              <div class="text-sm font-bold ${esBajoStock ? 'text-rose-400' : 'text-slate-100'}">${p.stock_packs} Bultos</div>
-              <div class="mt-0.5">${badgeAlerta}</div>
+              <div class="text-sm font-bold ${esBajoStock ? 'text-rose-400' : 'text-slate-100'}">
+                ${p.stock_packs} <span class="text-[11px] font-normal text-slate-400">Bultos</span>
+              </div>
+              <div class="text-[11px] text-emerald-400 font-medium">~${pallets} Pallets</div>
             </div>
           </div>
         `;
@@ -1562,7 +1559,7 @@
         selectCompra.insertAdjacentHTML('afterbegin', `<option value="${p.id}">${p.nombre}</option>`);
       });
 
-      // Mostrar banner de aviso si hay productos en riesgo de quiebre
+      // Mostrar banner si hay productos en riesgo de quiebre
       if (productosBajoStock > 0) {
         bannerAlerta.classList.remove('hidden');
         textoAlerta.innerHTML = `<b>¡Atención!</b> Tenés <b>${productosBajoStock} producto(s)</b> en o por debajo del stock mínimo de reposición.`;
@@ -1609,7 +1606,7 @@
       cargarTodo();
     }
 
-    // 9. GUARDAR VENTA, CARGAR HISTORIAL Y ELIMINACIÓN
+    // 9. GUARDAR VENTA, HISTORIAL Y ELIMINACIÓN
     async function guardarVenta() {
       const fechaVenta = document.getElementById('input-venta-fecha').value || obtenerFechaLocalISO(new Date());
       let clienteNombre = document.getElementById('select-cliente').value;
