@@ -50,7 +50,7 @@
 
   <main class="p-4 max-w-lg mx-auto">
 
-    <!-- PESTAÑA 1: INICIO (TABLERO FINANCIERO, RENDIMIENTO POR PRODUCTO Y ALERTA) -->
+    <!-- PESTAÑA 1: INICIO (TABLERO FINANCIERO, RENDIMIENTO Y ALERTA) -->
     <div id="tab-inicio" class="tab-content active space-y-4">
       
       <!-- Selector de Modo: Día / Semana / Mes / Todo -->
@@ -184,7 +184,7 @@
         </div>
       </section>
 
-      <!-- NUEVO: RENDIMIENTO DE VENTAS POR PRODUCTO (OPCIÓN 3) -->
+      <!-- RENDIMIENTO DE VENTAS POR PRODUCTO -->
       <section>
         <div class="flex justify-between items-center mb-2.5">
           <h2 class="text-sm font-semibold text-slate-300 flex items-center">
@@ -220,7 +220,7 @@
 
     </div>
 
-    <!-- PESTAÑA 2: VENTAS (FORMULARIO MULTI-PRODUCTO + HISTORIAL) -->
+    <!-- PESTAÑA 2: VENTAS (FORMULARIO MULTI-PRODUCTO + HISTORIAL CONSOLIDADO POR PEDIDO) -->
     <div id="tab-ventas" class="tab-content space-y-6">
       
       <section class="glass-card p-4 rounded-2xl border border-emerald-500/30">
@@ -294,27 +294,30 @@
         </form>
       </section>
 
-      <!-- HISTORIAL DE VENTAS -->
+      <!-- HISTORIAL DE VENTAS AGRUPADO POR PEDIDO / TICKET -->
       <section>
-        <h2 class="text-sm font-semibold text-slate-300 mb-3 flex items-center">
-          <i class="fa-solid fa-clock-rotate-left text-emerald-400 mr-2"></i> Historial de Ventas
-        </h2>
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-sm font-semibold text-slate-300 flex items-center">
+            <i class="fa-solid fa-receipt text-emerald-400 mr-2"></i> Historial de Pedidos y Remitos
+          </h2>
+          <span class="text-[10px] text-slate-400">Tocar ticket para ver y compartir</span>
+        </div>
+
         <div class="overflow-x-auto rounded-xl glass-card border border-slate-800">
           <table class="w-full text-left text-xs">
             <thead class="bg-slate-900/80 text-slate-400 uppercase text-[10px]">
               <tr>
                 <th class="p-2.5">Fecha</th>
                 <th class="p-2.5">Cliente</th>
-                <th class="p-2.5">Producto</th>
-                <th class="p-2.5">Cantidad</th>
-                <th class="p-2.5 text-right">Total</th>
+                <th class="p-2.5">Bultos</th>
+                <th class="p-2.5 text-right">Total Pedido</th>
                 <th class="p-2.5 text-right">Pago</th>
-                <th class="p-2.5 text-center">Acción</th>
+                <th class="p-2.5 text-center">Ticket</th>
               </tr>
             </thead>
             <tbody id="tabla-historial-ventas" class="divide-y divide-slate-800 text-slate-200">
               <tr>
-                <td colspan="7" class="p-4 text-center text-slate-500">Cargando ventas...</td>
+                <td colspan="6" class="p-4 text-center text-slate-500">Cargando pedidos...</td>
               </tr>
             </tbody>
           </table>
@@ -554,6 +557,87 @@
 
   </main>
 
+  <!-- MODAL EXCLUSIVO: TICKET / REMITO DE VENTA Y WHATSAPP -->
+  <div id="modal-ticket-venta" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-md p-5 rounded-3xl border border-emerald-500/40 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+      
+      <!-- Encabezado del Ticket -->
+      <div class="flex justify-between items-start border-b border-slate-800 pb-3">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block">Comprobante de Entrega</span>
+          <h3 class="text-lg font-black text-white flex items-center gap-1.5 mt-0.5">
+            <i class="fa-solid fa-file-invoice-dollar text-emerald-400"></i> Remito de Venta
+          </h3>
+          <p id="ticket-fecha" class="text-xs text-slate-400 mt-0.5"></p>
+        </div>
+        <button onclick="cerrarTicketVenta()" class="text-slate-400 hover:text-white text-lg p-1">✕</button>
+      </div>
+
+      <!-- Datos del Cliente y Pago -->
+      <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/80 space-y-1 text-xs">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Cliente:</span>
+          <span id="ticket-cliente" class="font-bold text-slate-100 text-sm"></span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Teléfono / Contacto:</span>
+          <span id="ticket-telefono" class="text-slate-300 font-medium"></span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Dirección de Entrega:</span>
+          <span id="ticket-direccion" class="text-slate-300"></span>
+        </div>
+        <div class="flex justify-between items-center pt-1 border-t border-slate-700/60">
+          <span class="text-slate-400">Condición de Pago:</span>
+          <span id="ticket-pago-badge" class="font-bold"></span>
+        </div>
+      </div>
+
+      <!-- Tabla Detalle de Productos -->
+      <div class="flex-1 overflow-y-auto space-y-1.5 pr-1 text-xs">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Artículos Entregados</span>
+        <div class="rounded-xl overflow-hidden border border-slate-800">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-900/90 text-slate-400 text-[10px] uppercase">
+              <tr>
+                <th class="p-2">Producto</th>
+                <th class="p-2 text-center">Cant.</th>
+                <th class="p-2 text-right">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody id="ticket-items-tbody" class="divide-y divide-slate-800 text-slate-200 bg-slate-800/30"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Totalizadores Finales -->
+      <div class="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/15 to-teal-500/10 border border-emerald-500/30 flex justify-between items-center">
+        <div>
+          <span class="text-[10px] text-slate-400 block uppercase font-bold tracking-wider">Total a Cobrar</span>
+          <span id="ticket-total-bultos" class="text-xs text-emerald-300 font-medium"></span>
+        </div>
+        <div id="ticket-total-monto" class="text-2xl font-black text-emerald-400">$ 0</div>
+      </div>
+
+      <!-- Botones de Acción: WhatsApp y Anular -->
+      <div class="space-y-2 pt-1 border-t border-slate-800">
+        <button type="button" onclick="compartirWhatsAppTicket()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs transition-all">
+          <i class="fa-brands fa-whatsapp text-base"></i> Enviar Comprobante por WhatsApp
+        </button>
+
+        <div class="flex space-x-2">
+          <button type="button" onclick="eliminarPedidoCompleto()" class="w-1/2 bg-rose-500/15 hover:bg-rose-500/25 active:scale-[0.98] text-rose-400 border border-rose-500/30 font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-trash-can"></i> Anular Pedido
+          </button>
+          <button type="button" onclick="cerrarTicketVenta()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs">
+            Cerrar
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- MODAL: EDITAR PRODUCTO Y CONFIGURAR STOCK MÍNIMO -->
   <div id="modal-editar-producto" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="glass-card w-full max-w-md p-5 rounded-2xl border border-blue-500/40 shadow-2xl space-y-4">
@@ -699,7 +783,7 @@
     </div>
   </div>
 
-  <!-- MODALES DE EDICIÓN (CLIENTES, VENTAS, COMPRAS, GASTOS) -->
+  <!-- MODALES DE EDICIÓN (CLIENTES, COMPRAS, GASTOS) -->
 
   <!-- Modal Cliente -->
   <div id="modal-editar-cliente" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
@@ -739,62 +823,6 @@
         </div>
         <button type="button" onclick="eliminarCliente()" class="w-full bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2">
           <i class="fa-solid fa-trash-can"></i> Eliminar Cliente
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Venta -->
-  <div id="modal-editar-venta" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="glass-card w-full max-w-md p-5 rounded-2xl border border-emerald-500/40 shadow-2xl space-y-4">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="text-base font-bold text-white flex items-center">
-          <i class="fa-solid fa-pen-to-square text-emerald-400 mr-2"></i> Editar Registro de Venta
-        </h3>
-        <button onclick="cerrarModalEditarVenta()" class="text-slate-400 hover:text-white text-lg">✕</button>
-      </div>
-      <input type="hidden" id="edit-venta-id">
-      <input type="hidden" id="edit-venta-packs-original">
-      <input type="hidden" id="edit-venta-prod-original">
-      <div class="space-y-3">
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Fecha</label>
-          <input type="date" id="edit-venta-fecha" class="w-full max-w-full box-border appearance-none bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none">
-        </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Cliente</label>
-          <select id="edit-venta-cliente" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none"></select>
-        </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Producto</label>
-          <select id="edit-venta-producto" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none"></select>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs text-slate-400 mb-1">Cantidad Bultos</label>
-            <input type="number" id="edit-venta-packs" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs text-slate-400 mb-1">Total ($)</label>
-            <input type="number" id="edit-venta-total" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-emerald-400 focus:outline-none">
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Forma de Pago</label>
-          <select id="edit-venta-pago" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none">
-            <option value="efectivo">💵 Efectivo</option>
-            <option value="transferencia">📱 Transferencia</option>
-            <option value="cuenta_corriente">📝 Fiado / Cta Cte</option>
-          </select>
-        </div>
-      </div>
-      <div class="space-y-2 pt-2">
-        <div class="flex space-x-3">
-          <button type="button" onclick="cerrarModalEditarVenta()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl">Cancelar</button>
-          <button type="button" onclick="guardarEdicionVenta()" class="w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg">Guardar</button>
-        </div>
-        <button type="button" onclick="eliminarVenta()" class="w-full bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2">
-          <i class="fa-solid fa-trash-can"></i> Eliminar Venta y Devolver Stock
         </button>
       </div>
     </div>
@@ -917,6 +945,8 @@
     let clientesGlobales = [];
     let productosGlobales = [];
     let ventasGlobales = [];
+    let pedidosVentasGlobales = []; // Lista agrupada por ticket / pedido
+    let pedidoSeleccionadoActual = null; // Para el modal de ticket
     let comprasGlobales = [];
     let gastosGlobales = [];
 
@@ -1273,7 +1303,7 @@
       }
     }
 
-    // 6. MOTOR DE CÁLCULO FINANCIERO Y RANKING DE PRODUCTOS
+    // 6. MOTOR FINANCIERO Y RANKING DE PRODUCTOS
     function calcularMetricasFinancieras() {
       const ventasPeriodo = ventasGlobales.filter(v => coincidePeriodoActual(v.fecha || v.created_at));
 
@@ -1286,7 +1316,6 @@
       let costoMercaderiaVendida = 0;
       let cantidadBultosVendidos = 0;
 
-      // Agrupación para el ranking de productos en este período
       const ventasPorProducto = {};
 
       ventasPeriodo.forEach(v => {
@@ -1329,7 +1358,7 @@
       document.getElementById('metric-ganancia-bruta').textContent = `$ ${Math.round(gananciaBruta).toLocaleString()}`;
       document.getElementById('metric-gastos-totales').textContent = `$ ${Math.round(gastosTotales).toLocaleString()}`;
 
-      // RENDERIZADO DEL RANKING DE PRODUCTOS VENDIDOS
+      // RENDER DEL RANKING
       const listaRendimiento = document.getElementById('lista-rendimiento-productos');
       const badgeTotalBultos = document.getElementById('badge-total-bultos-periodo');
       badgeTotalBultos.textContent = `${cantidadBultosVendidos} bultos totales`;
@@ -1434,7 +1463,7 @@
         `;
       } else if (tipo === 'ventas') {
         titulo.innerHTML = `<i class="fa-solid fa-arrow-trend-up text-blue-400"></i> Detalle de Facturación`;
-        subtitulo.textContent = `${ventasPeriodo.length} venta(s) realizadas`;
+        subtitulo.textContent = `${ventasPeriodo.length} salida(s) de productos`;
 
         if (ventasPeriodo.length === 0) {
           contenido.innerHTML = '<p class="py-6 text-center text-slate-500">No hay ventas registradas en esta fecha.</p>';
@@ -1569,7 +1598,7 @@
       document.getElementById('modal-detalle-financiero').classList.add('hidden');
     }
 
-    // 8. LEER PRODUCTOS (LISTA EN STOCK + ALERTA EN INICIO)
+    // 8. LEER PRODUCTOS
     async function cargarProductos() {
       const { data: productos, error } = await db.from('productos').select('*');
       if (error) console.error('Error al cargar productos:', error);
@@ -1600,7 +1629,6 @@
 
         if (esBajoStock) productosBajoStock.push(p);
 
-        // Fila compacta en pestaña Stock
         listaStock.innerHTML += `
           <div class="p-3 flex items-center justify-between hover:bg-slate-800/30 transition-colors ${esBajoStock ? 'bg-rose-500/5' : ''}">
             <div class="flex items-center space-x-3">
@@ -1628,7 +1656,6 @@
         `;
       });
 
-      // ALERTA EN INICIO
       if (productosBajoStock.length > 0) {
         contAlerta.classList.remove('hidden');
         badgeAlerta.textContent = `${productosBajoStock.length} producto(s)`;
@@ -1648,14 +1675,12 @@
         contAlerta.classList.add('hidden');
       }
 
-      // Actualizar opciones en los renglones dinámicos de ventas existentes
       document.querySelectorAll('.item-prod-select').forEach(sel => {
         const valActual = sel.value;
         sel.innerHTML = obtenerOpcionesProductosVentaHTML();
         sel.value = valActual;
       });
 
-      // Actualizar opciones en los renglones dinámicos de compras existentes
       document.querySelectorAll('.item-compra-prod-select').forEach(sel => {
         const valActual = sel.value;
         sel.innerHTML = obtenerOpcionesProductosCompraHTML();
@@ -1701,7 +1726,7 @@
       cargarTodo();
     }
 
-    // 9. LÓGICA DE VENTAS MULTI-PRODUCTO (FORMATO CLÁSICO LIMPIO)
+    // 9. LÓGICA DE VENTAS MULTI-PRODUCTO
     function obtenerOpcionesProductosVentaHTML() {
       let opts = '<option value="">Seleccionar producto...</option>';
       productosGlobales.forEach(p => {
@@ -1818,6 +1843,7 @@
       document.getElementById('label-items-cant').textContent = `${cantItemsValidos} producto(s) cotizado(s)`;
     }
 
+    // GUARDAR VENTA EN BATCH ATÓMICO
     async function guardarVenta() {
       const fechaVenta = document.getElementById('input-venta-fecha').value || obtenerFechaLocalISO(new Date());
       let clienteNombre = document.getElementById('select-cliente').value;
@@ -1879,11 +1905,11 @@
       }
 
       let totalVentaConsolidada = 0;
+      const registrosParaInsertar = [];
 
       for (const item of itemsAGuardar) {
         totalVentaConsolidada += item.subtotal;
-
-        await db.from('ventas').insert({
+        registrosParaInsertar.push({
           fecha: fechaVenta,
           cliente_nombre: clienteNombre,
           producto_nombre: item.productoNombre,
@@ -1900,6 +1926,13 @@
         }
       }
 
+      // Inserción en batch (todos los productos comparten el mismo microsegundo de created_at)
+      const { error: errInsert } = await db.from('ventas').insert(registrosParaInsertar);
+      if (errInsert) {
+        alert('Error al registrar venta: ' + errInsert.message);
+        return;
+      }
+
       if (metodoPago === 'cuenta_corriente') {
         const { data: c } = await db.from('clientes').select('*').eq('nombre', clienteNombre).single();
         if (c) {
@@ -1909,7 +1942,7 @@
         }
       }
 
-      mostrarNotificacion(`¡Venta de ${itemsAGuardar.length} producto(s) guardada con éxito!`);
+      mostrarNotificacion(`¡Pedido de ${itemsAGuardar.length} producto(s) guardado con éxito!`);
       document.getElementById('form-venta').reset();
       document.getElementById('input-venta-fecha').value = obtenerFechaLocalISO(new Date());
       document.getElementById('campo-nuevo-cliente').classList.add('hidden');
@@ -1917,13 +1950,14 @@
       cargarTodo();
     }
 
+    // 10. HISTORIAL DE VENTAS AGRUPADO POR PEDIDO / TICKET
     async function cargarHistorialVentas() {
       const tbody = document.getElementById('tabla-historial-ventas');
       const { data: ventas, error } = await db.from('ventas').select('*');
 
       if (error) {
         console.error('Error Supabase al cargar ventas:', error);
-        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-red-400 font-semibold">Error Supabase: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-400 font-semibold">Error Supabase: ${error.message}</td></tr>`;
         return;
       }
 
@@ -1931,40 +1965,70 @@
       tbody.innerHTML = '';
 
       if (!ventas || ventas.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-500">No hay ventas registradas aún.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-500">No hay pedidos registrados aún.</td></tr>';
         return;
       }
 
-      ventas.sort((a, b) => new Date(b.fecha || b.created_at || 0) - new Date(a.fecha || a.created_at || 0));
+      // Agrupamos las filas que pertenecen al mismo pedido/remito
+      const pedidosMap = new Map();
+
+      // Orden descendente
+      ventas.sort((a, b) => new Date(b.created_at || b.fecha || 0) - new Date(a.created_at || a.fecha || 0));
 
       ventas.forEach(v => {
-        let fechaFmt = '-';
-        if (v.fecha) {
-          fechaFmt = v.fecha.includes('T') ? v.fecha.split('T')[0] : v.fecha;
-        } else if (v.created_at) {
-          fechaFmt = new Date(v.created_at).toLocaleDateString('es-AR');
+        // La clave única de pedido combina el timestamp exacto (al segundo), cliente y forma de pago
+        const timeKey = v.created_at ? v.created_at.substring(0, 19) : (v.fecha || 'sin_fecha');
+        const key = `${timeKey}_${v.cliente_nombre}_${v.metodo_pago}`;
+
+        if (!pedidosMap.has(key)) {
+          pedidosMap.set(key, {
+            idKey: key,
+            fecha: v.fecha || (v.created_at ? v.created_at.split('T')[0] : ''),
+            created_at: v.created_at,
+            cliente_nombre: v.cliente_nombre || 'Cliente',
+            metodo_pago: v.metodo_pago || 'efectivo',
+            total_bultos: 0,
+            monto_total: 0,
+            items: []
+          });
         }
 
-        const cliente = v.cliente_nombre || 'Cliente';
-        const producto = v.producto_nombre || 'Producto';
-        const packs = Number(v.cantidad_packs || 0);
-        const total = Number(v.monto_total || 0);
-        
+        const ped = pedidosMap.get(key);
+        ped.total_bultos += Number(v.cantidad_packs || 0);
+        ped.monto_total += Number(v.monto_total || 0);
+        ped.items.push(v);
+      });
+
+      pedidosVentasGlobales = Array.from(pedidosMap.values());
+
+      pedidosVentasGlobales.forEach(ped => {
+        let fechaFmt = '-';
+        if (ped.fecha) {
+          fechaFmt = ped.fecha.includes('T') ? ped.fecha.split('T')[0] : ped.fecha;
+        } else if (ped.created_at) {
+          fechaFmt = new Date(ped.created_at).toLocaleDateString('es-AR');
+        }
+
         let pagoBadge = '💵 Efectivo';
-        if (v.metodo_pago === 'transferencia') pagoBadge = '📱 Transf.';
-        if (v.metodo_pago === 'cuenta_corriente') pagoBadge = '📝 Fiado';
+        if (ped.metodo_pago === 'transferencia') pagoBadge = '📱 Transf.';
+        if (ped.metodo_pago === 'cuenta_corriente') pagoBadge = '📝 Fiado';
+
+        const cantProds = ped.items.length;
+        const etiquetaProds = cantProds > 1 ? `<span class="text-[10px] text-slate-400 block">${cantProds} productos</span>` : `<span class="text-[10px] text-slate-400 block">${ped.items[0]?.producto_nombre || ''}</span>`;
 
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/40">
+          <tr class="hover:bg-slate-800/40 cursor-pointer transition-colors" onclick="abrirTicketVenta('${ped.idKey}')">
             <td class="p-2.5 text-slate-400 text-[11px]">${fechaFmt}</td>
-            <td class="p-2.5 font-semibold text-slate-100">${cliente}</td>
-            <td class="p-2.5 text-slate-300">${producto}</td>
-            <td class="p-2.5 text-cyan-400">${packs} bultos</td>
-            <td class="p-2.5 text-right font-bold text-emerald-400">$ ${total.toLocaleString()}</td>
-            <td class="p-2.5 text-right text-[11px] text-slate-400">${pagoBadge}</td>
+            <td class="p-2.5 font-semibold text-slate-100">
+              ${ped.cliente_nombre}
+              ${etiquetaProds}
+            </td>
+            <td class="p-2.5 text-cyan-400 font-medium">${ped.total_bultos} bultos</td>
+            <td class="p-2.5 text-right font-bold text-emerald-400 text-sm">$ ${ped.monto_total.toLocaleString()}</td>
+            <td class="p-2.5 text-right text-[11px] text-slate-300">${pagoBadge}</td>
             <td class="p-2.5 text-center">
-              <button onclick="abrirModalEditarVenta(${v.id})" class="text-emerald-400 hover:text-emerald-300 p-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                <i class="fa-solid fa-pen-to-square"></i>
+              <button onclick="event.stopPropagation(); abrirTicketVenta('${ped.idKey}')" class="text-emerald-400 hover:text-white p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 active:scale-95 transition-all" title="Ver Remito / Ticket">
+                <i class="fa-solid fa-receipt text-xs"></i>
               </button>
             </td>
           </tr>
@@ -1972,114 +2036,134 @@
       });
     }
 
-    // MODAL EDICIÓN Y ELIMINACIÓN DE VENTA INDIVIDUAL
-    function abrirModalEditarVenta(id) {
-      const v = ventasGlobales.find(item => item.id === id);
-      if (!v) return;
+    // 11. GESTIÓN DEL MODAL DE TICKET / REMITO
+    function abrirTicketVenta(idKey) {
+      const pedido = pedidosVentasGlobales.find(p => p.idKey === idKey);
+      if (!pedido) return;
 
-      document.getElementById('edit-venta-id').value = v.id;
-      document.getElementById('edit-venta-packs-original').value = v.cantidad_packs || 0;
-      document.getElementById('edit-venta-prod-original').value = v.producto_nombre || '';
+      pedidoSeleccionadoActual = pedido;
 
-      let f = v.fecha ? (v.fecha.includes('T') ? v.fecha.split('T')[0] : v.fecha) : obtenerFechaLocalISO(new Date());
-      document.getElementById('edit-venta-fecha').value = f;
+      // Buscar cliente en el directorio
+      const cli = clientesGlobales.find(c => c.nombre === pedido.cliente_nombre);
 
-      const selCli = document.getElementById('edit-venta-cliente');
-      selCli.innerHTML = '';
-      clientesGlobales.forEach(c => {
-        selCli.innerHTML += `<option value="${c.nombre}" ${c.nombre === v.cliente_nombre ? 'selected' : ''}>${c.nombre}</option>`;
-      });
+      document.getElementById('ticket-cliente').textContent = pedido.cliente_nombre;
+      document.getElementById('ticket-telefono').textContent = cli?.telefono || 'No registrado';
+      document.getElementById('ticket-direccion').textContent = cli?.direccion ? `${cli.direccion} (${cli.localidad || ''})` : 'Entrega directa';
+      document.getElementById('ticket-fecha').textContent = `Fecha de Operación: ${pedido.fecha}`;
 
-      const selProd = document.getElementById('edit-venta-producto');
-      selProd.innerHTML = '';
-      productosGlobales.forEach(p => {
-        selProd.innerHTML += `<option value="${p.nombre}" ${p.nombre === v.producto_nombre ? 'selected' : ''}>${p.nombre}</option>`;
-      });
-
-      document.getElementById('edit-venta-packs').value = v.cantidad_packs || 0;
-      document.getElementById('edit-venta-total').value = v.monto_total || 0;
-      document.getElementById('edit-venta-pago').value = v.metodo_pago || 'efectivo';
-
-      document.getElementById('modal-editar-venta').classList.remove('hidden');
-    }
-
-    function cerrarModalEditarVenta() {
-      document.getElementById('modal-editar-venta').classList.add('hidden');
-    }
-
-    async function guardarEdicionVenta() {
-      const id = document.getElementById('edit-venta-id').value;
-      const fecha = document.getElementById('edit-venta-fecha').value;
-      const cliente = document.getElementById('edit-venta-cliente').value;
-      const producto = document.getElementById('edit-venta-producto').value;
-      const packsNuevos = Number(document.getElementById('edit-venta-packs').value || 0);
-      const packsOriginales = Number(document.getElementById('edit-venta-packs-original').value || 0);
-      const total = Number(document.getElementById('edit-venta-total').value || 0);
-      const pago = document.getElementById('edit-venta-pago').value;
-
-      if (!fecha || !cliente || !producto || packsNuevos <= 0 || total <= 0) {
-        return alert('Completá todos los campos correctamente.');
+      const badgePago = document.getElementById('ticket-pago-badge');
+      if (pedido.metodo_pago === 'efectivo') {
+        badgePago.innerHTML = '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">💵 Abonado en Efectivo</span>';
+      } else if (pedido.metodo_pago === 'transferencia') {
+        badgePago.innerHTML = '<span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">📱 Abonado x Transferencia</span>';
+      } else {
+        badgePago.innerHTML = '<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">📝 Cuenta Corriente (Fiado)</span>';
       }
 
-      const { error } = await db.from('ventas').update({
-        fecha: fecha,
-        cliente_nombre: cliente,
-        producto_nombre: producto,
-        cantidad_packs: packsNuevos,
-        monto_total: total,
-        metodo_pago: pago
-      }).eq('id', id);
+      // Rellenar tabla de items
+      const tbody = document.getElementById('ticket-items-tbody');
+      tbody.innerHTML = '';
 
-      if (error) return alert('Error al actualizar venta: ' + error.message);
+      pedido.items.forEach(item => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-800/60">
+            <td class="p-2 font-medium text-slate-100">${item.producto_nombre}</td>
+            <td class="p-2 text-center text-cyan-400 font-bold">${item.cantidad_packs} bultos</td>
+            <td class="p-2 text-right font-bold text-slate-100">$ ${Number(item.monto_total).toLocaleString()}</td>
+          </tr>
+        `;
+      });
 
-      const diferencia = packsOriginales - packsNuevos;
-      if (diferencia !== 0) {
-        const prod = productosGlobales.find(p => p.nombre === producto);
+      document.getElementById('ticket-total-bultos').textContent = `Total: ${pedido.total_bultos} bultos entregados`;
+      document.getElementById('ticket-total-monto').textContent = `$ ${pedido.monto_total.toLocaleString()}`;
+
+      document.getElementById('modal-ticket-venta').classList.remove('hidden');
+    }
+
+    function cerrarTicketVenta() {
+      document.getElementById('modal-ticket-venta').classList.add('hidden');
+      pedidoSeleccionadoActual = null;
+    }
+
+    // COMPARTIR REMITO POR WHATSAPP
+    function compartirWhatsAppTicket() {
+      if (!pedidoSeleccionadoActual) return;
+      const ped = pedidoSeleccionadoActual;
+      const cli = clientesGlobales.find(c => c.nombre === ped.cliente_nombre);
+
+      let formaPagoTexto = 'Efectivo';
+      if (ped.metodo_pago === 'transferencia') formaPagoTexto = 'Transferencia';
+      if (ped.metodo_pago === 'cuenta_corriente') formaPagoTexto = 'Cuenta Corriente (Fiado)';
+
+      // Armamos un texto profesional para el cliente
+      let mensaje = `📦 *DISTRIBUIDORA EXPRESS*\n`;
+      mensaje += `🧾 *Comprobante de Entrega*\n`;
+      mensaje += `📅 *Fecha:* ${ped.fecha}\n`;
+      mensaje += `👤 *Cliente:* ${ped.cliente_nombre}\n\n`;
+      mensaje += `🛒 *Detalle del Pedido:*\n`;
+
+      ped.items.forEach(item => {
+        mensaje += `• *${item.producto_nombre}* x ${item.cantidad_packs} bultos: $${Number(item.monto_total).toLocaleString()}\n`;
+      });
+
+      mensaje += `\n--------------------------------\n`;
+      mensaje += `📦 *Volumen Total:* ${ped.total_bultos} bultos\n`;
+      mensaje += `💰 *TOTAL A COBRAR:* $${ped.monto_total.toLocaleString()}\n`;
+      mensaje += `💳 *Condición de Pago:* ${formaPagoTexto}\n\n`;
+      mensaje += `¡Muchas gracias por su compra! 🙌`;
+
+      let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensaje)}`;
+
+      if (cli && cli.telefono) {
+        let telLimpio = cli.telefono.replace(/\D/g, '');
+        // Si no tiene prefijo de país, agregar Argentina (549)
+        if (telLimpio.length === 10) telLimpio = '549' + telLimpio;
+        url = `https://api.whatsapp.com/send?phone=${telLimpio}&text=${encodeURIComponent(mensaje)}`;
+      }
+
+      window.open(url, '_blank');
+    }
+
+    // ELIMINAR O ANULAR PEDIDO COMPLETO (REINTEGRA EL STOCK DE CADA PRODUCTO)
+    async function eliminarPedidoCompleto() {
+      if (!pedidoSeleccionadoActual) return;
+      const ped = pedidoSeleccionadoActual;
+
+      if (!confirm(`¿Confirmás la anulación de este pedido de ${ped.cliente_nombre}? Se eliminarán los ${ped.items.length} productos registrados y se devolverán ${ped.total_bultos} bultos al stock del camión.`)) {
+        return;
+      }
+
+      // 1. Devolver el stock de cada producto involucrado
+      for (const item of ped.items) {
+        const prod = productosGlobales.find(p => p.nombre === item.producto_nombre);
         if (prod) {
           await db.from('productos').update({
-            stock_packs: prod.stock_packs + diferencia
+            stock_packs: prod.stock_packs + Number(item.cantidad_packs || 0)
           }).eq('id', prod.id);
         }
       }
 
-      cerrarModalEditarVenta();
-      mostrarNotificacion('¡Venta actualizada con éxito!');
-      cargarTodo();
-    }
-
-    async function eliminarVenta() {
-      const id = document.getElementById('edit-venta-id').value;
-      const v = ventasGlobales.find(item => item.id == id);
-      if (!v) return;
-
-      if (!confirm(`¿Confirmás que querés eliminar la venta de ${v.cliente_nombre}? Se reintegrarán ${v.cantidad_packs} bultos al stock disponible.`)) {
-        return;
-      }
-
-      const prod = productosGlobales.find(p => p.nombre === v.producto_nombre);
-      if (prod) {
-        await db.from('productos').update({
-          stock_packs: prod.stock_packs + Number(v.cantidad_packs || 0)
-        }).eq('id', prod.id);
-      }
-
-      if (v.metodo_pago === 'cuenta_corriente') {
-        const cli = clientesGlobales.find(c => c.nombre === v.cliente_nombre);
+      // 2. Si fue cuenta corriente, restar de la deuda
+      if (ped.metodo_pago === 'cuenta_corriente') {
+        const cli = clientesGlobales.find(c => c.nombre === ped.cliente_nombre);
         if (cli && cli.saldo_deuda) {
-          const nuevoSaldo = Math.max(0, Number(cli.saldo_deuda) - Number(v.monto_total || 0));
+          const nuevoSaldo = Math.max(0, Number(cli.saldo_deuda) - ped.monto_total);
           await db.from('clientes').update({ saldo_deuda: nuevoSaldo }).eq('id', cli.id);
         }
       }
 
-      const { error } = await db.from('ventas').delete().eq('id', id);
-      if (error) return alert('Error al eliminar venta: ' + error.message);
+      // 3. Eliminar los registros de la tabla ventas en Supabase
+      const idsAEliminar = ped.items.map(i => i.id);
+      const { error: errDel } = await db.from('ventas').delete().in('id', idsAEliminar);
 
-      cerrarModalEditarVenta();
-      mostrarNotificacion('¡Venta eliminada y bultos devueltos al stock!');
+      if (errDel) return alert('Error al anular pedido: ' + errDel.message);
+
+      cerrarTicketVenta();
+      mostrarNotificacion('¡Pedido anulado y stock devuelto al camión!');
       cargarTodo();
     }
 
-    // 10. LÓGICA DE COMPRAS MULTI-PRODUCTO (FORMATO CLÁSICO LIMPIO)
+    // 12. COMPRAS MULTI-PRODUCTO
     function obtenerOpcionesProductosCompraHTML() {
       let opts = `
         <option value="">Seleccionar producto existente...</option>
@@ -2120,7 +2204,6 @@
           </select>
         </div>
 
-        <!-- Campos dinámicos si se crea un producto nuevo en este renglón -->
         <div class="campo-fila-nuevo-producto hidden space-y-2.5 p-2.5 bg-slate-800/60 rounded-xl border border-emerald-500/30">
           <div>
             <label class="block text-[10px] text-emerald-400 mb-0.5 font-medium">Nombre del Nuevo Producto</label>
@@ -2479,7 +2562,7 @@
       cargarTodo();
     }
 
-    // 11. GASTOS
+    // 13. GASTOS
     function actualizarSelectCategoriasGasto() {
       const select = document.getElementById('select-gasto-categoria');
       const baseCats = {
@@ -2676,7 +2759,7 @@
       cargarTodo();
     }
 
-    // 12. CLIENTES
+    // 14. CLIENTES
     async function guardarClienteDirectorio() {
       const nombre = document.getElementById('input-cliente-nombre').value.trim();
       const direccion = document.getElementById('input-cliente-direccion').value.trim();
