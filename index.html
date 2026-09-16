@@ -184,7 +184,7 @@
         </div>
       </section>
 
-      <!-- Tarjeta de Alerta Preventiva de Stock Mínimo (UBICADA ABAJO DE TODO) -->
+      <!-- Tarjeta de Alerta Preventiva de Stock Mínimo (Al final de Inicio) -->
       <section id="contenedor-alerta-stock" class="hidden">
         <div class="glass-card p-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 shadow-lg space-y-2">
           <div class="flex items-center justify-between">
@@ -202,13 +202,19 @@
 
     </div>
 
-    <!-- PESTAÑA 2: VENTAS (Formulario Venta + Historial) -->
+    <!-- PESTAÑA 2: VENTAS (FORMULARIO MULTI-PRODUCTO + HISTORIAL) -->
     <div id="tab-ventas" class="tab-content space-y-6">
       
+      <!-- Formulario de Venta Multi-Producto -->
       <section class="glass-card p-4 rounded-2xl border border-emerald-500/30">
-        <h2 class="text-base font-bold text-white mb-4 flex items-center">
-          <i class="fa-solid fa-cart-plus text-emerald-400 mr-2"></i> Nueva Venta
-        </h2>
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-base font-bold text-white flex items-center">
+            <i class="fa-solid fa-cart-plus text-emerald-400 mr-2"></i> Nueva Venta
+          </h2>
+          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+            Múltiples productos
+          </span>
+        </div>
 
         <form id="form-venta" class="space-y-4">
           <div>
@@ -229,45 +235,51 @@
             <input type="text" id="nombre-nuevo-cliente" placeholder="Ej: Mini Changomas Lomas" class="w-full bg-slate-800 border border-emerald-500/50 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-400">
           </div>
 
+          <!-- SECCIÓN RENGLONES DINÁMICOS DE PRODUCTOS -->
+          <div class="space-y-3 pt-1 border-t border-slate-800/80">
+            <div class="flex justify-between items-center">
+              <label class="block text-xs font-semibold text-slate-300">
+                <i class="fa-solid fa-boxes-stacked text-emerald-400 mr-1"></i> Productos del Pedido
+              </label>
+              <span class="text-[10px] text-slate-400">Se agrega otro renglón al elegir</span>
+            </div>
+
+            <!-- Contenedor donde se insertan las filas dinámicamente -->
+            <div id="contenedor-filas-venta" class="space-y-3"></div>
+
+            <!-- Botón adicional para agregar fila manual -->
+            <button type="button" onclick="agregarFilaVenta()" class="w-full py-2 bg-slate-800/70 hover:bg-slate-800 border border-dashed border-emerald-500/40 text-emerald-400 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.99] transition-all">
+              <i class="fa-solid fa-plus text-[10px]"></i> Agregar otro producto
+            </button>
+          </div>
+
+          <!-- RESUMEN EN VIVO DEL TOTAL DEL PEDIDO -->
+          <div class="p-3.5 rounded-xl bg-slate-900/90 border border-emerald-500/30 flex justify-between items-center shadow-inner">
+            <div>
+              <span class="text-xs text-slate-400 block font-medium">Total Acumulado</span>
+              <span class="text-[10px] text-slate-500" id="label-items-cant">0 productos seleccionados</span>
+            </div>
+            <div class="text-2xl font-extrabold text-emerald-400" id="label-total-pedido-venta">
+              $ 0
+            </div>
+          </div>
+
           <div>
-            <label class="block text-xs text-slate-400 mb-1">Producto</label>
-            <select id="select-producto-venta" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500">
-              <option value="">Seleccionar producto...</option>
+            <label class="block text-xs text-slate-400 mb-1">Forma de Pago del Pedido</label>
+            <select id="select-metodo-pago" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm">
+              <option value="efectivo">💵 Efectivo</option>
+              <option value="transferencia">📱 Transferencia</option>
+              <option value="cuenta_corriente">📝 Fiado / Cta Cte</option>
             </select>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Pallets completos</label>
-              <input type="number" id="input-pallets" placeholder="Ej: 1" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Bultos sueltos</label>
-              <input type="number" id="input-packs" placeholder="Ej: 15" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Total Venta ($)</label>
-              <input type="number" id="input-monto-total" placeholder="115000" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-emerald-400">
-            </div>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Forma de Pago</label>
-              <select id="select-metodo-pago" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm">
-                <option value="efectivo">💵 Efectivo</option>
-                <option value="transferencia">📱 Transferencia</option>
-                <option value="cuenta_corriente">📝 Fiado / Cta Cte</option>
-              </select>
-            </div>
-          </div>
-
           <button type="button" onclick="guardarVenta()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
-            <i class="fa-solid fa-check mr-2"></i> Guardar Venta
+            <i class="fa-solid fa-check mr-2"></i> Guardar Venta Completa
           </button>
         </form>
       </section>
 
+      <!-- HISTORIAL DE VENTAS -->
       <section>
         <h2 class="text-sm font-semibold text-slate-300 mb-3 flex items-center">
           <i class="fa-solid fa-clock-rotate-left text-emerald-400 mr-2"></i> Historial de Ventas
@@ -358,7 +370,7 @@
         </form>
       </section>
 
-      <!-- 2. INVENTARIO ACTUAL DISPONIBLE -->
+      <!-- 2. INVENTARIO ACTUAL DISPONIBLE (Compacto) -->
       <section>
         <div class="flex justify-between items-center mb-2.5">
           <h2 class="text-sm font-semibold text-slate-300 flex items-center">
@@ -1121,6 +1133,7 @@
       await cargarClientes();
       actualizarSelectCategoriasGasto();
       calcularMetricasFinancieras();
+      inicializarFilasVenta();
     }
 
     // 4. CAMBIO DE PESTAÑAS
@@ -1503,7 +1516,7 @@
       document.getElementById('modal-detalle-financiero').classList.add('hidden');
     }
 
-    // 8. LEER PRODUCTOS (LISTA EN PESTAÑA STOCK + TARJETA ALERTA AL FINAL DE INICIO)
+    // 8. LEER PRODUCTOS (LISTA EN STOCK + ALERTA EN INICIO)
     async function cargarProductos() {
       const { data: productos, error } = await db.from('productos').select('*');
       if (error) console.error('Error al cargar productos:', error);
@@ -1511,17 +1524,14 @@
       productosGlobales = productos || [];
 
       const listaStock = document.getElementById('lista-stock-inventario');
-      const selectVenta = document.getElementById('select-producto-venta');
       const selectCompra = document.getElementById('select-compra-producto');
 
-      // Elementos de la alerta en Inicio
       const contAlerta = document.getElementById('contenedor-alerta-stock');
       const badgeAlerta = document.getElementById('badge-alerta-stock-cant');
       const textoAlerta = document.getElementById('texto-alerta-stock');
       const detalleAlerta = document.getElementById('lista-alertas-detalle');
 
       listaStock.innerHTML = '';
-      selectVenta.innerHTML = '<option value="">Seleccionar producto...</option>';
       selectCompra.innerHTML = `
         <option value="">Seleccionar producto existente...</option>
         <option value="__NUEVO__" class="text-emerald-400 font-bold">+ Crear Nuevo Producto</option>
@@ -1545,7 +1555,7 @@
           productosBajoStock.push(p);
         }
 
-        // Fila compacta dentro de la pestaña STOCK
+        // Fila compacta en pestaña Stock
         listaStock.innerHTML += `
           <div class="p-3 flex items-center justify-between hover:bg-slate-800/30 transition-colors ${esBajoStock ? 'bg-rose-500/5' : ''}">
             <div class="flex items-center space-x-3">
@@ -1572,11 +1582,10 @@
           </div>
         `;
 
-        selectVenta.innerHTML += `<option value="${p.id}">${p.nombre} (Stock: ${p.stock_packs} bultos)</option>`;
         selectCompra.insertAdjacentHTML('afterbegin', `<option value="${p.id}">${p.nombre}</option>`);
       });
 
-      // GESTIÓN DE LA TARJETA DE AVISO (AL FINAL DE INICIO)
+      // ALERTA AL PIE DE INICIO
       if (productosBajoStock.length > 0) {
         contAlerta.classList.remove('hidden');
         badgeAlerta.textContent = `${productosBajoStock.length} producto(s)`;
@@ -1595,6 +1604,13 @@
       } else {
         contAlerta.classList.add('hidden');
       }
+
+      // Actualizar opciones en los selectores dinámicos ya existentes
+      document.querySelectorAll('.item-prod-select').forEach(sel => {
+        const valActual = sel.value;
+        sel.innerHTML = obtenerOpcionesProductosHTML();
+        sel.value = valActual;
+      });
     }
 
     // MODAL: EDITAR PRODUCTO Y STOCK MÍNIMO
@@ -1635,58 +1651,231 @@
       cargarTodo();
     }
 
-    // 9. GUARDAR VENTA, HISTORIAL Y ELIMINACIÓN
+    // 9. LÓGICA DE FORMULARIO MULTI-PRODUCTO EN VENTAS
+    function obtenerOpcionesProductosHTML() {
+      let opts = '<option value="">Seleccionar producto...</option>';
+      productosGlobales.forEach(p => {
+        opts += `<option value="${p.id}">${p.nombre} (Stock: ${p.stock_packs} bultos)</option>`;
+      });
+      return opts;
+    }
+
+    function inicializarFilasVenta() {
+      const cont = document.getElementById('contenedor-filas-venta');
+      cont.innerHTML = '';
+      agregarFilaVenta();
+    }
+
+    function agregarFilaVenta() {
+      const cont = document.getElementById('contenedor-filas-venta');
+      const numFila = cont.children.length + 1;
+
+      const div = document.createElement('div');
+      div.className = 'fila-venta-item glass-card p-3 rounded-xl border border-slate-700/80 space-y-2.5 relative transition-all';
+      div.innerHTML = `
+        <div class="flex justify-between items-center pb-1 border-b border-slate-800">
+          <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-box text-[11px]"></i> Ítem #${numFila}
+          </span>
+          <button type="button" onclick="eliminarFilaVenta(this)" class="text-slate-500 hover:text-rose-400 p-1 rounded transition-colors text-xs" title="Quitar producto">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+
+        <div>
+          <label class="block text-[10px] text-slate-400 mb-0.5">Producto</label>
+          <select class="item-prod-select w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500" onchange="alCambiarProductoFila(this)">
+            ${obtenerOpcionesProductosHTML()}
+          </select>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-0.5">Pallets</label>
+            <input type="number" class="item-pallets w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-slate-200 focus:outline-none" placeholder="0" min="0" oninput="recalcularTotalVenta()">
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-0.5">Bultos sueltos</label>
+            <input type="number" class="item-packs w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-slate-200 focus:outline-none" placeholder="0" min="0" oninput="recalcularTotalVenta()">
+          </div>
+          <div>
+            <label class="block text-[10px] text-emerald-400 font-bold mb-0.5">Subtotal ($)</label>
+            <input type="number" class="item-subtotal w-full bg-slate-800 border border-emerald-500/40 rounded-lg p-2 text-xs font-bold text-emerald-400 focus:outline-none" placeholder="0" min="0" oninput="recalcularTotalVenta()">
+          </div>
+        </div>
+      `;
+
+      cont.appendChild(div);
+      renumerarFilasVenta();
+      recalcularTotalVenta();
+    }
+
+    function alCambiarProductoFila(selectElem) {
+      const cont = document.getElementById('contenedor-filas-venta');
+      const filas = cont.querySelectorAll('.fila-venta-item');
+      const esUltimaFila = (selectElem.closest('.fila-venta-item') === filas[filas.length - 1]);
+
+      // Si seleccionó un producto y está en el último renglón, agrega automáticamente uno nuevo abajo
+      if (selectElem.value !== '' && esUltimaFila) {
+        agregarFilaVenta();
+      }
+
+      recalcularTotalVenta();
+    }
+
+    function eliminarFilaVenta(btnElem) {
+      const cont = document.getElementById('contenedor-filas-venta');
+      const filas = cont.querySelectorAll('.fila-venta-item');
+
+      if (filas.length <= 1) {
+        // Si queda una sola fila, se resetea en lugar de eliminarse
+        const filaUnica = filas[0];
+        filaUnica.querySelector('.item-prod-select').value = '';
+        filaUnica.querySelector('.item-pallets').value = '';
+        filaUnica.querySelector('.item-packs').value = '';
+        filaUnica.querySelector('.item-subtotal').value = '';
+      } else {
+        btnElem.closest('.fila-venta-item').remove();
+      }
+
+      renumerarFilasVenta();
+      recalcularTotalVenta();
+    }
+
+    function renumerarFilasVenta() {
+      const cont = document.getElementById('contenedor-filas-venta');
+      const filas = cont.querySelectorAll('.fila-venta-item');
+      filas.forEach((f, idx) => {
+        const tag = f.querySelector('.text-emerald-400');
+        if (tag) tag.innerHTML = `<i class="fa-solid fa-box text-[11px]"></i> Ítem #${idx + 1}`;
+      });
+    }
+
+    function recalcularTotalVenta() {
+      const cont = document.getElementById('contenedor-filas-venta');
+      const filas = cont.querySelectorAll('.fila-venta-item');
+
+      let total = 0;
+      let cantItemsValidos = 0;
+
+      filas.forEach(f => {
+        const prodId = f.querySelector('.item-prod-select').value;
+        const subtotal = Number(f.querySelector('.item-subtotal').value || 0);
+
+        if (prodId && subtotal > 0) {
+          cantItemsValidos++;
+        }
+        total += subtotal;
+      });
+
+      document.getElementById('label-total-pedido-venta').textContent = `$ ${Math.round(total).toLocaleString()}`;
+      document.getElementById('label-items-cant').textContent = `${cantItemsValidos} producto(s) cotizado(s)`;
+    }
+
+    // GUARDAR VENTA MULTI-PRODUCTO
     async function guardarVenta() {
       const fechaVenta = document.getElementById('input-venta-fecha').value || obtenerFechaLocalISO(new Date());
       let clienteNombre = document.getElementById('select-cliente').value;
       const nuevoCliente = document.getElementById('nombre-nuevo-cliente').value.trim();
-      const productoId = document.getElementById('select-producto-venta').value;
-      const pallets = Number(document.getElementById('input-pallets').value || 0);
-      const packsSueltos = Number(document.getElementById('input-packs').value || 0);
-      const montoTotal = Number(document.getElementById('input-monto-total').value || 0);
       const metodoPago = document.getElementById('select-metodo-pago').value;
 
       if (clienteNombre === '__NUEVO__') {
-        if (!nuevoCliente) return alert('Escribí el nombre del nuevo cliente');
+        if (!nuevoCliente) return alert('Escribí el nombre del nuevo cliente.');
         clienteNombre = nuevoCliente;
         await db.from('clientes').insert({ nombre: clienteNombre });
       }
 
-      if (!clienteNombre || !productoId || montoTotal <= 0) {
-        return alert('Completá cliente, producto y monto de venta.');
+      if (!clienteNombre) return alert('Por favor seleccioná o creá un cliente.');
+
+      const cont = document.getElementById('contenedor-filas-venta');
+      const filas = cont.querySelectorAll('.fila-venta-item');
+
+      const itemsAGuardar = [];
+      const demandaPorProducto = {};
+
+      // 1. Recorrer y parsear cada renglón cargado
+      for (const f of filas) {
+        const prodId = f.querySelector('.item-prod-select').value;
+        const pallets = Number(f.querySelector('.item-pallets').value || 0);
+        const packsSueltos = Number(f.querySelector('.item-packs').value || 0);
+        const subtotal = Number(f.querySelector('.item-subtotal').value || 0);
+
+        // Si la fila está completamente vacía (por ej la fila automática final sin usar), se ignora
+        if (!prodId && pallets === 0 && packsSueltos === 0 && subtotal === 0) continue;
+
+        if (!prodId) return alert('Hay un renglón con cantidad o subtotal pero sin producto seleccionado.');
+        if (subtotal <= 0) return alert('Verificá los subtotales: cada producto cargado debe tener un monto mayor a $0.');
+
+        const prod = productosGlobales.find(p => p.id == prodId);
+        if (!prod) continue;
+
+        const packsPorPallet = prod.packs_por_pallet || 100;
+        const totalPacks = (pallets * packsPorPallet) + packsSueltos;
+
+        if (totalPacks <= 0) return alert(`Ingresá la cantidad de bultos o pallets para "${prod.nombre}".`);
+
+        demandaPorProducto[prodId] = (demandaPorProducto[prodId] || 0) + totalPacks;
+
+        itemsAGuardar.push({
+          productoId: prod.id,
+          productoNombre: prod.nombre,
+          cantidadPacks: totalPacks,
+          subtotal: subtotal
+        });
       }
 
-      const { data: prod } = await db.from('productos').select('*').eq('id', productoId).single();
-      const totalPacksVendidos = (pallets * (prod.packs_por_pallet || 100)) + packsSueltos;
-
-      if (totalPacksVendidos <= 0) return alert('Ingresá una cantidad vendida (pallets o bultos).');
-
-      if (totalPacksVendidos > prod.stock_packs) {
-        return alert(`Stock insuficiente. Quedan ${prod.stock_packs} bultos.`);
+      if (itemsAGuardar.length === 0) {
+        return alert('Agregá al menos un producto con su cantidad y subtotal para registrar la venta.');
       }
 
-      await db.from('ventas').insert({
-        fecha: fechaVenta,
-        cliente_nombre: clienteNombre,
-        producto_nombre: prod.nombre,
-        cantidad_packs: totalPacksVendidos,
-        monto_total: montoTotal,
-        metodo_pago: metodoPago
-      });
-
-      await db.from('productos').update({ stock_packs: prod.stock_packs - totalPacksVendidos }).eq('id', productoId);
-
-      if (metodoPago === 'cuenta_corriente') {
-        const { data: c } = await db.from('clientes').select('*').eq('nombre', clienteNombre).single();
-        if (c) {
-          await db.from('clientes').update({ saldo_deuda: Number(c.saldo_deuda || 0) + montoTotal }).eq('id', c.id);
+      // 2. Validar stock disponible
+      for (const [prodId, packsRequeridos] of Object.entries(demandaPorProducto)) {
+        const prod = productosGlobales.find(p => p.id == prodId);
+        if (prod && packsRequeridos > prod.stock_packs) {
+          return alert(`Stock insuficiente para "${prod.nombre}". Solicitaste ${packsRequeridos} bultos y sólo tenés ${prod.stock_packs} disponibles.`);
         }
       }
 
-      mostrarNotificacion('¡Venta registrada con éxito!');
+      // 3. Procesar venta renglón por renglón
+      let totalVentaConsolidada = 0;
+
+      for (const item of itemsAGuardar) {
+        totalVentaConsolidada += item.subtotal;
+
+        // Registrar en Supabase la venta individual
+        await db.from('ventas').insert({
+          fecha: fechaVenta,
+          cliente_nombre: clienteNombre,
+          producto_nombre: item.productoNombre,
+          cantidad_packs: item.cantidadPacks,
+          monto_total: item.subtotal,
+          metodo_pago: metodoPago
+        });
+
+        // Descontar stock
+        const prodActual = productosGlobales.find(p => p.id == item.productoId);
+        if (prodActual) {
+          await db.from('productos').update({
+            stock_packs: prodActual.stock_packs - item.cantidadPacks
+          }).eq('id', item.productoId);
+        }
+      }
+
+      // 4. Si fue fiado, actualizar la deuda total del cliente en cuenta corriente
+      if (metodoPago === 'cuenta_corriente') {
+        const { data: c } = await db.from('clientes').select('*').eq('nombre', clienteNombre).single();
+        if (c) {
+          await db.from('clientes').update({
+            saldo_deuda: Number(c.saldo_deuda || 0) + totalVentaConsolidada
+          }).eq('id', c.id);
+        }
+      }
+
+      mostrarNotificacion(`¡Venta de ${itemsAGuardar.length} producto(s) guardada con éxito!`);
       document.getElementById('form-venta').reset();
       document.getElementById('input-venta-fecha').value = obtenerFechaLocalISO(new Date());
       document.getElementById('campo-nuevo-cliente').classList.add('hidden');
+      inicializarFilasVenta();
       cargarTodo();
     }
 
@@ -1745,7 +1934,7 @@
       });
     }
 
-    // MODAL EDICIÓN Y ELIMINACIÓN DE VENTA
+    // MODAL EDICIÓN Y ELIMINACIÓN DE VENTA INDIVIDUAL
     function abrirModalEditarVenta(id) {
       const v = ventasGlobales.find(item => item.id === id);
       if (!v) return;
@@ -1852,7 +2041,7 @@
       cargarTodo();
     }
 
-    // 10. GUARDAR Y CARGAR COMPRAS Y ELIMINACIÓN
+    // 10. COMPRAS
     async function guardarCompra() {
       const fechaCompra = document.getElementById('input-compra-fecha').value || obtenerFechaLocalISO(new Date());
       let productoId = document.getElementById('select-compra-producto').value;
@@ -2055,7 +2244,7 @@
       cargarTodo();
     }
 
-    // 11. GASTOS (CATEGORÍAS DINÁMICAS, EDICIÓN Y ELIMINACIÓN)
+    // 11. GASTOS
     function actualizarSelectCategoriasGasto() {
       const select = document.getElementById('select-gasto-categoria');
       const baseCats = {
@@ -2252,7 +2441,7 @@
       cargarTodo();
     }
 
-    // 12. CLIENTES (ALTA, CARGA, EDICIÓN Y ELIMINACIÓN)
+    // 12. CLIENTES
     async function guardarClienteDirectorio() {
       const nombre = document.getElementById('input-cliente-nombre').value.trim();
       const direccion = document.getElementById('input-cliente-direccion').value.trim();
