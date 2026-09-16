@@ -50,7 +50,7 @@
 
   <main class="p-4 max-w-lg mx-auto">
 
-    <!-- PESTAÑA 1: INICIO (TABLERO FINANCIERO Y ALERTA DE STOCK) -->
+    <!-- PESTAÑA 1: INICIO (TABLERO FINANCIERO CON ALERTA AL FINAL) -->
     <div id="tab-inicio" class="tab-content active space-y-4">
       
       <!-- Selector de Modo: Día / Semana / Mes / Todo -->
@@ -86,22 +86,6 @@
         <button onclick="moverTiempo(1)" class="w-10 h-10 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 flex items-center justify-center text-slate-200 transition-all">
           <i class="fa-solid fa-chevron-right text-sm"></i>
         </button>
-      </section>
-
-      <!-- Tarjeta de Alerta Preventiva de Stock Mínimo (Permanece en Inicio) -->
-      <section id="contenedor-alerta-stock" class="hidden">
-        <div class="glass-card p-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 shadow-lg space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-rose-400 flex items-center gap-2">
-              <i class="fa-solid fa-triangle-exclamation text-base"></i> Alerta de Reposición
-            </span>
-            <span id="badge-alerta-stock-cant" class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
-              0 críticos
-            </span>
-          </div>
-          <p id="texto-alerta-stock" class="text-xs text-slate-300"></p>
-          <div id="lista-alertas-detalle" class="pt-1 space-y-1 text-xs"></div>
-        </div>
       </section>
 
       <!-- Tarjeta Principal: Ganancia Neta Real (Clickable) -->
@@ -197,6 +181,22 @@
         </div>
         <div class="text-right">
           <div class="text-base font-bold text-amber-400" id="metric-por-cobrar">$ 0</div>
+        </div>
+      </section>
+
+      <!-- Tarjeta de Alerta Preventiva de Stock Mínimo (UBICADA ABAJO DE TODO) -->
+      <section id="contenedor-alerta-stock" class="hidden">
+        <div class="glass-card p-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 shadow-lg space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-400 flex items-center gap-2">
+              <i class="fa-solid fa-triangle-exclamation text-base"></i> Alerta de Reposición
+            </span>
+            <span id="badge-alerta-stock-cant" class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
+              0 críticos
+            </span>
+          </div>
+          <p id="texto-alerta-stock" class="text-xs text-slate-300"></p>
+          <div id="lista-alertas-detalle" class="pt-1 space-y-1 text-xs"></div>
         </div>
       </section>
 
@@ -358,7 +358,7 @@
         </form>
       </section>
 
-      <!-- 2. INVENTARIO ACTUAL DISPONIBLE (Trasladado a esta posición exacta) -->
+      <!-- 2. INVENTARIO ACTUAL DISPONIBLE -->
       <section>
         <div class="flex justify-between items-center mb-2.5">
           <h2 class="text-sm font-semibold text-slate-300 flex items-center">
@@ -1503,7 +1503,7 @@
       document.getElementById('modal-detalle-financiero').classList.add('hidden');
     }
 
-    // 8. LEER PRODUCTOS (LISTA EN PESTAÑA STOCK + TARJETA ALERTA EN INICIO)
+    // 8. LEER PRODUCTOS (LISTA EN PESTAÑA STOCK + TARJETA ALERTA AL FINAL DE INICIO)
     async function cargarProductos() {
       const { data: productos, error } = await db.from('productos').select('*');
       if (error) console.error('Error al cargar productos:', error);
@@ -1576,7 +1576,7 @@
         selectCompra.insertAdjacentHTML('afterbegin', `<option value="${p.id}">${p.nombre}</option>`);
       });
 
-      // GESTIÓN DE LA TARJETA DE AVISO EN PESTAÑA INICIO
+      // GESTIÓN DE LA TARJETA DE AVISO (AL FINAL DE INICIO)
       if (productosBajoStock.length > 0) {
         contAlerta.classList.remove('hidden');
         badgeAlerta.textContent = `${productosBajoStock.length} producto(s)`;
