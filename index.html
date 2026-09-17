@@ -14,31 +14,45 @@
   <!-- SheetJS para exportar a Excel (.xlsx) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
+    /* =========================================================
+       1. VARIABLES Y BASE TEMA OSCURO (1.0 ORIGINAL NAVY/SLATE)
+       ========================================================= */
     :root {
       --bg-body: #0b1120;
       --text-main: #f8fafc;
+      --text-muted: #94a3b8;
       --bg-card: rgba(18, 26, 43, 0.75);
       --border-card: rgba(255, 255, 255, 0.08);
       --bg-header: rgba(2, 6, 23, 0.92);
       --bg-input: #1e293b;
       --border-input: #334155;
+      --bg-subcard: rgba(15, 23, 42, 0.6);
+      --table-border: #1e293b;
+      --table-header-bg: rgba(15, 23, 42, 0.85);
     }
 
+    /* =========================================================
+       2. TEMA CLARO REFINADO (ALTO CONTRASTE Y LEGIBILIDAD)
+       ========================================================= */
     body.theme-light {
-      --bg-body: #f8fafc;
+      --bg-body: #f1f5f9;
       --text-main: #0f172a;
-      --bg-card: rgba(255, 255, 255, 0.95);
-      --border-card: #e2e8f0;
-      --bg-header: rgba(255, 255, 255, 0.95);
-      --bg-input: #f1f5f9;
-      --border-input: #cbd5e1;
+      --text-muted: #475569;
+      --bg-card: #ffffff;
+      --border-card: #cbd5e1;
+      --bg-header: rgba(255, 255, 255, 0.96);
+      --bg-input: #ffffff;
+      --border-input: #94a3b8;
+      --bg-subcard: #f8fafc;
+      --table-border: #e2e8f0;
+      --table-header-bg: #e2e8f0;
     }
 
     body {
       background-color: var(--bg-body);
       color: var(--text-main);
       font-family: system-ui, -apple-system, sans-serif;
-      transition: background-color 0.25s ease, color 0.25s ease;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     .glass-card {
@@ -46,17 +60,19 @@
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border: 1px solid var(--border-card);
-      transition: background 0.25s ease, border-color 0.25s ease;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    /* Adaptación Modo Claro */
+    /* Reglas específicas de alto contraste para Modo Claro */
     body.theme-light .glass-card {
-      box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.07);
+      box-shadow: 0 4px 15px -1px rgba(15, 23, 42, 0.08);
     }
     body.theme-light header,
     body.theme-light nav {
       background-color: var(--bg-header) !important;
-      border-color: #e2e8f0 !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
     body.theme-light .text-white,
     body.theme-light .text-slate-100,
@@ -65,14 +81,16 @@
     }
     body.theme-light .text-slate-300,
     body.theme-light .text-slate-400 {
-      color: #475569 !important;
+      color: #334155 !important;
+    }
+    body.theme-light .text-slate-500 {
+      color: #64748b !important;
     }
     body.theme-light .bg-slate-800,
     body.theme-light .bg-slate-900,
     body.theme-light .bg-slate-950 {
-      background-color: #f1f5f9 !important;
-      border-color: #e2e8f0 !important;
-      color: #0f172a !important;
+      background-color: #f8fafc !important;
+      border-color: #cbd5e1 !important;
     }
     body.theme-light input,
     body.theme-light select {
@@ -80,8 +98,59 @@
       border-color: var(--border-input) !important;
       color: #0f172a !important;
     }
-    body.theme-light .divide-slate-800 > * {
-      border-color: #f1f5f9 !important;
+    body.theme-light input::placeholder {
+      color: #94a3b8 !important;
+    }
+    body.theme-light thead {
+      background-color: var(--table-header-bg) !important;
+      color: #334155 !important;
+    }
+    body.theme-light thead th {
+      color: #334155 !important;
+    }
+    body.theme-light .divide-slate-800 > *,
+    body.theme-light .divide-slate-800\/60 > * {
+      border-color: #e2e8f0 !important;
+    }
+    body.theme-light tr:hover {
+      background-color: rgba(15, 23, 42, 0.03) !important;
+    }
+
+    /* Badges con alto contraste en tema claro */
+    body.theme-light .badge-neto {
+      background-color: #d1fae5 !important;
+      color: #065f46 !important;
+      border-color: #a7f3d0 !important;
+    }
+    body.theme-light .text-emerald-400 {
+      color: #059669 !important;
+    }
+    body.theme-light .text-blue-400 {
+      color: #2563eb !important;
+    }
+    body.theme-light .text-indigo-400 {
+      color: #4f46e5 !important;
+    }
+    body.theme-light .text-teal-400 {
+      color: #0d9488 !important;
+    }
+    body.theme-light .text-rose-400 {
+      color: #e11d48 !important;
+    }
+    body.theme-light .text-amber-400 {
+      color: #d97706 !important;
+    }
+
+    /* Mantiene texto blanco impecable en botones principales */
+    body.theme-light button.btn-colored-text,
+    body.theme-light button[class*="bg-blue-600"],
+    body.theme-light button[class*="bg-emerald-600"],
+    body.theme-light button[class*="bg-rose-600"],
+    body.theme-light button[class*="from-emerald-500"] {
+      color: #ffffff !important;
+    }
+    body.theme-light button.btn-colored-text * {
+      color: #ffffff !important;
     }
 
     .tab-content { display: none; }
@@ -133,7 +202,7 @@
       
       <!-- Selector de Modo Temporal -->
       <section class="flex bg-slate-900/90 p-1 rounded-xl border border-slate-800">
-        <button onclick="cambiarModoTiempo('dia', this)" class="modo-tiempo-btn active flex-1 py-1.5 text-xs rounded-lg bg-blue-600 text-white font-bold transition-all">
+        <button onclick="cambiarModoTiempo('dia', this)" class="modo-tiempo-btn active flex-1 py-1.5 text-xs rounded-lg bg-blue-600 text-white font-bold transition-all btn-colored-text">
           Día
         </button>
         <button onclick="cambiarModoTiempo('semana', this)" class="modo-tiempo-btn flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition-all">
@@ -177,7 +246,7 @@
             </span>
             <p class="text-[11px] text-slate-400 mt-0.5">Ganancia limpia tras reponer stock y gastos</p>
           </div>
-          <span id="badge-margen-neto" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+          <span id="badge-margen-neto" class="badge-neto text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
             0% Margen
           </span>
         </div>
@@ -366,7 +435,7 @@
             </select>
           </div>
 
-          <button type="button" onclick="guardarVenta()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
+          <button type="button" onclick="guardarVenta()" class="btn-colored-text w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
             <i class="fa-solid fa-check mr-2"></i> Confirmar Venta Completa
           </button>
         </form>
@@ -451,7 +520,7 @@
             </div>
           </div>
 
-          <button type="button" onclick="guardarCompra()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
+          <button type="button" onclick="guardarCompra()" class="btn-colored-text w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
             <i class="fa-solid fa-plus mr-2"></i> Registrar Ingreso Completo
           </button>
         </form>
@@ -539,7 +608,7 @@
             <input type="text" id="input-gasto-descripcion" placeholder="Ej: Carga YPF Av. Mitre" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none">
           </div>
 
-          <button type="button" onclick="guardarGasto()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
+          <button type="button" onclick="guardarGasto()" class="btn-colored-text w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
             <i class="fa-solid fa-receipt mr-2"></i> Guardar Gasto
           </button>
         </form>
@@ -600,7 +669,7 @@
             <input type="text" id="input-cliente-telefono" placeholder="Ej: 1145678901 (Sin 0 ni 15)" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none">
           </div>
 
-          <button type="button" onclick="guardarClienteDirectorio()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
+          <button type="button" onclick="guardarClienteDirectorio()" class="btn-colored-text w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
             <i class="fa-solid fa-user-check mr-2"></i> Guardar Cliente
           </button>
         </form>
@@ -704,7 +773,7 @@
 
       <!-- Botones de Acción: WhatsApp y Anular -->
       <div class="space-y-2 pt-1 border-t border-slate-800">
-        <button type="button" onclick="compartirWhatsAppTicket()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs transition-all">
+        <button type="button" onclick="compartirWhatsAppTicket()" class="btn-colored-text w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs transition-all">
           <i class="fa-brands fa-whatsapp text-base"></i> Enviar Comprobante por WhatsApp
         </button>
 
@@ -755,7 +824,7 @@
         <button type="button" onclick="cerrarModalEditarProducto()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl text-xs">
           Cancelar
         </button>
-        <button type="button" onclick="guardarEdicionProducto()" class="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg text-xs">
+        <button type="button" onclick="guardarEdicionProducto()" class="btn-colored-text w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg text-xs">
           Guardar Cambios
         </button>
       </div>
@@ -901,7 +970,7 @@
       <div class="space-y-2 pt-2">
         <div class="flex space-x-3">
           <button type="button" onclick="cerrarModalEditar()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl">Cancelar</button>
-          <button type="button" onclick="guardarEdicionCliente()" class="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg">Guardar</button>
+          <button type="button" onclick="guardarEdicionCliente()" class="btn-colored-text w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg">Guardar</button>
         </div>
         <button type="button" onclick="eliminarCliente()" class="w-full bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2">
           <i class="fa-solid fa-trash-can"></i> Eliminar Cliente
@@ -945,7 +1014,7 @@
       <div class="space-y-2 pt-2">
         <div class="flex space-x-3">
           <button type="button" onclick="cerrarModalEditarCompra()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl">Cancelar</button>
-          <button type="button" onclick="guardarEdicionCompra()" class="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg">Guardar</button>
+          <button type="button" onclick="guardarEdicionCompra()" class="btn-colored-text w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg">Guardar</button>
         </div>
         <button type="button" onclick="eliminarCompra()" class="w-full bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2">
           <i class="fa-solid fa-trash-can"></i> Eliminar Compra y Ajustar Stock
@@ -985,7 +1054,7 @@
       <div class="space-y-2 pt-2">
         <div class="flex space-x-3">
           <button type="button" onclick="cerrarModalEditarGasto()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl">Cancelar</button>
-          <button type="button" onclick="guardarEdicionGasto()" class="w-1/2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl shadow-lg">Guardar</button>
+          <button type="button" onclick="guardarEdicionGasto()" class="btn-colored-text w-1/2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl shadow-lg">Guardar</button>
         </div>
         <button type="button" onclick="eliminarGasto()" class="w-full bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2">
           <i class="fa-solid fa-trash-can"></i> Eliminar Registro de Gasto
@@ -1054,11 +1123,11 @@
       const btn = document.getElementById('btn-theme-toggle');
       if (tema === 'light') {
         document.body.classList.add('theme-light');
-        icon.className = 'fa-solid fa-moon text-xs text-indigo-500';
+        icon.className = 'fa-solid fa-moon text-xs text-blue-600';
         btn.title = 'Cambiar a Modo Oscuro';
       } else {
         document.body.classList.remove('theme-light');
-        icon.className = 'fa-solid fa-sun text-xs text-amber-400';
+        icon.className = 'fa-solid fa-sun text-xs text-blue-400';
         btn.title = 'Cambiar a Modo Claro';
       }
     }
@@ -1299,10 +1368,10 @@
     function cambiarModoTiempo(modo, btn) {
       modoTiempo = modo;
       document.querySelectorAll('.modo-tiempo-btn').forEach(b => {
-        b.classList.remove('bg-blue-600', 'text-white', 'font-bold');
+        b.classList.remove('bg-blue-600', 'text-white', 'font-bold', 'btn-colored-text');
         b.classList.add('text-slate-400');
       });
-      btn.classList.add('bg-blue-600', 'text-white', 'font-bold');
+      btn.classList.add('bg-blue-600', 'text-white', 'font-bold', 'btn-colored-text');
       btn.classList.remove('text-slate-400');
 
       const barra = document.getElementById('barra-navegacion-temporal');
@@ -1527,19 +1596,19 @@
 
         contenido.innerHTML = `
           <div class="space-y-2 py-2">
-            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/60">
+            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/60 border border-slate-700/60">
               <span class="text-slate-300 font-medium">(+) Facturación Total</span>
               <span class="font-bold text-slate-100">$ ${totalVentas.toLocaleString()}</span>
             </div>
-            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/60">
+            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/60 border border-slate-700/60">
               <span class="text-slate-300 font-medium">(-) Costo Reposición Stock</span>
               <span class="font-bold text-rose-400">- $ ${totalCosto.toLocaleString()}</span>
             </div>
             <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/90 border border-slate-700">
-              <span class="text-teal-300 font-bold">(=) Ganancia Bruta</span>
-              <span class="font-bold text-teal-300">$ ${gananciaBruta.toLocaleString()}</span>
+              <span class="text-teal-400 font-bold">(=) Ganancia Bruta</span>
+              <span class="font-bold text-teal-400">$ ${gananciaBruta.toLocaleString()}</span>
             </div>
-            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/60">
+            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/60 border border-slate-700/60">
               <span class="text-slate-300 font-medium">(-) Gastos Operativos</span>
               <span class="font-bold text-rose-400">- $ ${totalGastos.toLocaleString()}</span>
             </div>
@@ -1672,7 +1741,7 @@
                 </div>
                 <div class="text-right">
                   <div class="font-bold text-amber-400 text-sm">$ ${Number(d.saldo_deuda).toLocaleString()}</div>
-                  <button onclick="cobrarDeuda(${d.id}); cerrarModalDetalle();" class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 mt-0.5">
+                  <button onclick="cobrarDeuda(${d.id}); cerrarModalDetalle();" class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 mt-0.5 font-semibold">
                     Saldar
                   </button>
                 </div>
@@ -2045,7 +2114,7 @@
 
       if (error) {
         console.error('Error Supabase al cargar ventas:', error);
-        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-400 font-semibold">Error Supabase: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-rose-500 font-semibold">Error Supabase: ${error.message}</td></tr>`;
         return;
       }
 
@@ -2136,11 +2205,11 @@
 
       const badgePago = document.getElementById('ticket-pago-badge');
       if (pedido.metodo_pago === 'efectivo') {
-        badgePago.innerHTML = '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">💵 Abonado en Efectivo</span>';
+        badgePago.innerHTML = '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">💵 Abonado en Efectivo</span>';
       } else if (pedido.metodo_pago === 'transferencia') {
-        badgePago.innerHTML = '<span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">📱 Abonado x Transferencia</span>';
+        badgePago.innerHTML = '<span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold">📱 Abonado x Transferencia</span>';
       } else {
-        badgePago.innerHTML = '<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">📝 Cuenta Corriente (Fiado)</span>';
+        badgePago.innerHTML = '<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-500 border border-amber-500/30 font-bold">📝 Cuenta Corriente (Fiado)</span>';
       }
 
       const tbody = document.getElementById('ticket-items-tbody');
@@ -2313,7 +2382,7 @@
 
         <div class="flex justify-between items-center text-[10px] text-slate-400 px-1 pt-0.5">
           <span class="item-compra-resumen-cant">0 bultos totales</span>
-          <span class="item-compra-costo-unitario font-medium text-violet-400">Costo: $0.00 / bulto</span>
+          <span class="item-compra-costo-unitario font-medium text-blue-400">Costo: $0.00 / bulto</span>
         </div>
       `;
 
@@ -2511,7 +2580,7 @@
 
       if (error) {
         console.error('Error Supabase al cargar compras:', error);
-        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-400 font-semibold">Error Supabase: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-rose-500 font-semibold">Error Supabase: ${error.message}</td></tr>`;
         return;
       }
 
@@ -2538,7 +2607,7 @@
             <td class="p-2.5 font-semibold text-slate-100">${producto}</td>
             <td class="p-2.5 text-blue-400">${packs} bultos</td>
             <td class="p-2.5 text-right font-bold text-emerald-400">$ ${total.toLocaleString()}</td>
-            <td class="p-2.5 text-right text-violet-400">$ ${costoPack}</td>
+            <td class="p-2.5 text-right text-blue-400">$ ${costoPack}</td>
             <td class="p-2.5 text-center">
               <button onclick="abrirModalEditarCompra(${c.id})" class="text-blue-400 hover:text-blue-300 p-1 rounded-lg bg-blue-500/10 border border-blue-500/20">
                 <i class="fa-solid fa-pen-to-square"></i>
@@ -2705,7 +2774,7 @@
 
       if (error) {
         console.error('Error Supabase al cargar gastos:', error);
-        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-400 font-semibold">Error Supabase: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-rose-500 font-semibold">Error Supabase: ${error.message}</td></tr>`;
         return;
       }
 
