@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IMPERIO | Control de Distribución</title>
   
-  <!-- Isotipo / Favicon para la pestaña del navegador -->
-  <link rel="icon" type="image/jpeg" href="Logotipo.jpeg">
-  <link rel="apple-touch-icon" href="Logotipo.jpeg">
-
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome para Íconos -->
@@ -22,7 +18,7 @@
       --bg-body: #0b1120;
       --text-main: #f8fafc;
       --bg-card: rgba(18, 26, 43, 0.75);
-      --border-card: rgba(212, 175, 55, 0.15);
+      --border-card: rgba(255, 255, 255, 0.08);
       --bg-header: rgba(2, 6, 23, 0.92);
       --bg-input: #1e293b;
       --border-input: #334155;
@@ -32,9 +28,9 @@
       --bg-body: #f8fafc;
       --text-main: #0f172a;
       --bg-card: rgba(255, 255, 255, 0.95);
-      --border-card: rgba(226, 232, 240, 0.9);
+      --border-card: #e2e8f0;
       --bg-header: rgba(255, 255, 255, 0.95);
-      --bg-input: #ffffff;
+      --bg-input: #f1f5f9;
       --border-input: #cbd5e1;
     }
 
@@ -47,16 +43,15 @@
 
     .glass-card {
       background: var(--bg-card);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       border: 1px solid var(--border-card);
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.2);
       transition: background 0.25s ease, border-color 0.25s ease;
     }
 
-    /* Adaptaciones de modo claro */
+    /* Adaptación Modo Claro */
     body.theme-light .glass-card {
-      box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.08);
+      box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.07);
     }
     body.theme-light header,
     body.theme-light nav {
@@ -100,30 +95,32 @@
 </head>
 <body class="pb-24">
 
-  <!-- Header App con Estética IMPERIO, Logo y Selector Dark/Light -->
-  <header class="p-3.5 border-b border-amber-500/20 flex justify-between items-center sticky top-0 bg-slate-950/90 backdrop-blur z-50 shadow-md shadow-black/40">
+  <!-- Header App Estética Original con Título IMPERIO -->
+  <header class="p-3.5 border-b border-slate-800 flex justify-between items-center sticky top-0 bg-slate-950/90 backdrop-blur z-50">
     <div class="flex items-center space-x-2.5">
-      <img src="Logotipo.jpeg" alt="Logo IMPERIO" class="w-9 h-9 rounded-full object-cover border border-amber-500/40 shadow-sm shadow-amber-500/20" onerror="this.style.display='none'">
+      <div class="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+        <i class="fa-solid fa-truck-fast text-base"></i>
+      </div>
       <div>
-        <h1 class="text-xl font-black tracking-wider bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-500 bg-clip-text text-transparent">
+        <h1 class="text-lg font-black tracking-wider uppercase text-white leading-none">
           IMPERIO
         </h1>
-        <p class="text-[10px] text-amber-300/70 font-medium tracking-wide">Distribuidora Mayorista</p>
+        <p class="text-[10px] text-slate-400 font-medium tracking-wide mt-0.5">Control de Distribución</p>
       </div>
     </div>
     <div class="flex items-center gap-1.5">
       <!-- Botón Dark / Light Mode -->
-      <button id="btn-theme-toggle" onclick="toggleTema()" title="Cambiar a Modo Claro / Oscuro" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-amber-400 w-8 h-8 rounded-full flex items-center justify-center border border-amber-500/30 transition-all">
+      <button id="btn-theme-toggle" onclick="toggleTema()" title="Cambiar Tema" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-blue-400 w-8 h-8 rounded-lg flex items-center justify-center border border-slate-700 transition-all">
         <i id="theme-icon" class="fa-solid fa-sun text-xs"></i>
       </button>
 
       <!-- Botón Calculadora de Precios -->
-      <button onclick="abrirCalculadora()" title="Calcular precios sugeridos" class="bg-indigo-500/10 hover:bg-indigo-500/20 active:scale-95 text-indigo-400 px-2.5 py-1 rounded-full text-xs font-semibold border border-indigo-500/30 flex items-center transition-all">
+      <button onclick="abrirCalculadora()" title="Calcular precios sugeridos" class="bg-indigo-500/10 hover:bg-indigo-500/20 active:scale-95 text-indigo-400 px-2.5 py-1 rounded-lg text-xs font-semibold border border-indigo-500/30 flex items-center transition-all">
         <i class="fa-solid fa-calculator mr-1 text-xs"></i> Precios
       </button>
 
       <!-- Botón de Descarga Excel -->
-      <button onclick="exportarExcel()" title="Descargar backup en Excel" class="bg-emerald-500/10 hover:bg-emerald-500/20 active:scale-95 text-emerald-400 px-2.5 py-1 rounded-full text-xs font-semibold border border-emerald-500/30 flex items-center transition-all">
+      <button onclick="exportarExcel()" title="Descargar backup en Excel" class="bg-emerald-500/10 hover:bg-emerald-500/20 active:scale-95 text-emerald-400 px-2.5 py-1 rounded-lg text-xs font-semibold border border-emerald-500/30 flex items-center transition-all">
         <i class="fa-solid fa-file-excel mr-1 text-xs"></i> Excel
       </button>
     </div>
@@ -136,7 +133,7 @@
       
       <!-- Selector de Modo Temporal -->
       <section class="flex bg-slate-900/90 p-1 rounded-xl border border-slate-800">
-        <button onclick="cambiarModoTiempo('dia', this)" class="modo-tiempo-btn active flex-1 py-1.5 text-xs rounded-lg bg-amber-500 text-slate-950 font-bold transition-all">
+        <button onclick="cambiarModoTiempo('dia', this)" class="modo-tiempo-btn active flex-1 py-1.5 text-xs rounded-lg bg-blue-600 text-white font-bold transition-all">
           Día
         </button>
         <button onclick="cambiarModoTiempo('semana', this)" class="modo-tiempo-btn flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition-all">
@@ -152,19 +149,19 @@
 
       <!-- Barra de Navegación Temporal -->
       <section id="barra-navegacion-temporal" class="glass-card p-2 rounded-xl border border-slate-800 flex items-center justify-between shadow-md">
-        <button onclick="moverTiempo(-1)" class="w-10 h-10 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 flex items-center justify-center text-slate-200 transition-all">
+        <button onclick="moverTiempo(-1)" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 flex items-center justify-center text-slate-200 transition-all">
           <i class="fa-solid fa-chevron-left text-sm"></i>
         </button>
         
         <div class="text-center px-2">
           <div id="etiqueta-tiempo-cursor" class="font-bold text-sm text-slate-100 flex items-center justify-center gap-1.5">
-            <i class="fa-regular fa-calendar text-amber-400 text-xs"></i>
+            <i class="fa-regular fa-calendar text-blue-400 text-xs"></i>
             <span>Cargando fecha...</span>
           </div>
           <span id="sub-etiqueta-tiempo" class="text-[10px] text-slate-400 block mt-0.5">Período seleccionado</span>
         </div>
 
-        <button onclick="moverTiempo(1)" class="w-10 h-10 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 flex items-center justify-center text-slate-200 transition-all">
+        <button onclick="moverTiempo(1)" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 flex items-center justify-center text-slate-200 transition-all">
           <i class="fa-solid fa-chevron-right text-sm"></i>
         </button>
       </section>
@@ -178,7 +175,7 @@
               <i class="fa-solid fa-wallet"></i> Ganancia Neta Real
               <i class="fa-solid fa-circle-info text-[11px] text-emerald-500/70"></i>
             </span>
-            <p class="text-[11px] text-slate-400 mt-0.5">Plata limpia tras reponer bultos y gastos</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Ganancia limpia tras reponer stock y gastos</p>
           </div>
           <span id="badge-margen-neto" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
             0% Margen
@@ -237,12 +234,12 @@
         </div>
 
         <!-- Gastos Operativos -->
-        <div onclick="abrirDetalleFinanciero('gastos')" class="glass-card p-3.5 rounded-xl border border-slate-800 hover:border-amber-500/40 cursor-pointer active:scale-[0.98] transition-all">
+        <div onclick="abrirDetalleFinanciero('gastos')" class="glass-card p-3.5 rounded-xl border border-slate-800 hover:border-rose-500/40 cursor-pointer active:scale-[0.98] transition-all">
           <div class="flex items-center justify-between text-slate-400 text-xs">
             <span>Gastos Flete/Día</span>
-            <i class="fa-solid fa-gas-pump text-amber-400"></i>
+            <i class="fa-solid fa-gas-pump text-rose-400"></i>
           </div>
-          <div class="text-lg font-bold text-amber-400 mt-1" id="metric-gastos-totales">$ 0</div>
+          <div class="text-lg font-bold text-rose-400 mt-1" id="metric-gastos-totales">$ 0</div>
           <div class="flex justify-between items-center mt-0.5">
             <span class="text-[10px] text-slate-400">Nafta y varios</span>
             <i class="fa-solid fa-chevron-right text-[8px] text-slate-500"></i>
@@ -251,14 +248,14 @@
 
       </section>
 
-      <!-- Cuentas por Cobrar -->
-      <section onclick="abrirDetalleFinanciero('deudas')" class="glass-card p-3.5 rounded-xl border border-amber-500/30 hover:border-amber-500/50 flex justify-between items-center cursor-pointer active:scale-[0.98] transition-all">
+      <!-- Cuentas Corrientes -->
+      <section onclick="abrirDetalleFinanciero('deudas')" class="glass-card p-3.5 rounded-xl border border-slate-800 hover:border-slate-700 flex justify-between items-center cursor-pointer active:scale-[0.98] transition-all">
         <div>
           <span class="text-xs text-slate-300 font-medium flex items-center gap-1.5">
-            <i class="fa-solid fa-receipt text-amber-400"></i> Cuentas Corrientes (Fiado en Calle)
+            <i class="fa-solid fa-receipt text-blue-400"></i> Cuentas Corrientes (Fiado en Calle)
             <i class="fa-solid fa-chevron-right text-[9px] text-slate-500"></i>
           </span>
-          <p class="text-[11px] text-slate-500">Tocar para ver clientes deudores</p>
+          <p class="text-[11px] text-slate-400">Tocar para ver clientes deudores</p>
         </div>
         <div class="text-right">
           <div class="text-base font-bold text-amber-400" id="metric-por-cobrar">$ 0</div>
@@ -269,9 +266,9 @@
       <section>
         <div class="flex justify-between items-center mb-2.5">
           <h2 class="text-sm font-semibold text-slate-300 flex items-center">
-            <i class="fa-solid fa-chart-simple text-amber-400 mr-2"></i> Ventas por Producto
+            <i class="fa-solid fa-chart-simple text-blue-400 mr-2"></i> Ventas por Producto
           </h2>
-          <span id="badge-total-bultos-periodo" class="text-[10px] text-amber-300 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full font-medium">
+          <span id="badge-total-bultos-periodo" class="text-[10px] text-blue-300 bg-blue-500/10 border border-blue-500/30 px-2 py-0.5 rounded-full font-medium">
             0 bultos totales
           </span>
         </div>
@@ -283,7 +280,7 @@
         </div>
       </section>
 
-      <!-- Tarjeta de Alerta Preventiva de Stock Mínimo (Al final de Inicio) -->
+      <!-- ALERTA DE STOCK MÍNIMO AL FINAL DE INICIO -->
       <section id="contenedor-alerta-stock" class="hidden">
         <div class="glass-card p-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 shadow-lg space-y-2">
           <div class="flex items-center justify-between">
@@ -301,7 +298,7 @@
 
     </div>
 
-    <!-- PESTAÑA 2: VENTAS (FORMULARIO MULTI-PRODUCTO + HISTORIAL POR TICKET) -->
+    <!-- PESTAÑA 2: VENTAS (MULTI-PRODUCTO + TICKET REMITO) -->
     <div id="tab-ventas" class="tab-content space-y-6">
       
       <section class="glass-card p-4 rounded-2xl border border-emerald-500/30">
@@ -321,7 +318,7 @@
           </div>
 
           <div>
-            <label class="block text-xs text-slate-400 mb-1">Cliente / Supermercado</label>
+            <label class="block text-xs text-slate-400 mb-1">Cliente / Negocio</label>
             <select id="select-cliente" onchange="toggleNuevoCliente(this.value)" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500">
               <option value="">Cargando clientes...</option>
               <option value="__NUEVO__" class="text-emerald-400 font-bold">+ Crear Nuevo Cliente</option>
@@ -329,11 +326,11 @@
           </div>
 
           <div id="campo-nuevo-cliente" class="hidden">
-            <label class="block text-xs text-emerald-400 mb-1 font-medium">Nombre del Nuevo Cliente / Negocio</label>
-            <input type="text" id="nombre-nuevo-cliente" placeholder="Ej: Mini Changomas Lomas" class="w-full bg-slate-800 border border-emerald-500/50 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-400">
+            <label class="block text-xs text-emerald-400 mb-1 font-medium">Nombre del Nuevo Cliente</label>
+            <input type="text" id="nombre-nuevo-cliente" placeholder="Ej: Autoservicio Mitre" class="w-full bg-slate-800 border border-emerald-500/50 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-400">
           </div>
 
-          <!-- RENGLONES DINÁMICOS DE PRODUCTOS (VENTA) -->
+          <!-- RENGLONES DINÁMICOS DE PRODUCTOS -->
           <div class="space-y-3 pt-1 border-t border-slate-800/80">
             <div class="flex justify-between items-center">
               <label class="block text-xs font-semibold text-slate-300">
@@ -352,7 +349,7 @@
           <!-- RESUMEN DEL TOTAL DEL PEDIDO -->
           <div class="p-3.5 rounded-xl bg-slate-900/90 border border-emerald-500/30 flex justify-between items-center shadow-inner">
             <div>
-              <span class="text-xs text-slate-400 block font-medium">Total Acumulado</span>
+              <span class="text-xs text-slate-400 block font-medium">Total Pedido</span>
               <span class="text-[10px] text-slate-500" id="label-items-cant">0 productos seleccionados</span>
             </div>
             <div class="text-2xl font-extrabold text-emerald-400" id="label-total-pedido-venta">
@@ -361,7 +358,7 @@
           </div>
 
           <div>
-            <label class="block text-xs text-slate-400 mb-1">Forma de Pago del Pedido</label>
+            <label class="block text-xs text-slate-400 mb-1">Forma de Pago</label>
             <select id="select-metodo-pago" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm">
               <option value="efectivo">💵 Efectivo</option>
               <option value="transferencia">📱 Transferencia</option>
@@ -370,18 +367,18 @@
           </div>
 
           <button type="button" onclick="guardarVenta()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
-            <i class="fa-solid fa-check mr-2"></i> Guardar Venta Completa
+            <i class="fa-solid fa-check mr-2"></i> Confirmar Venta Completa
           </button>
         </form>
       </section>
 
-      <!-- HISTORIAL DE VENTAS AGRUPADO POR PEDIDO / TICKET -->
+      <!-- HISTORIAL DE VENTAS AGRUPADO POR PEDIDO -->
       <section>
         <div class="flex justify-between items-center mb-3">
           <h2 class="text-sm font-semibold text-slate-300 flex items-center">
-            <i class="fa-solid fa-receipt text-emerald-400 mr-2"></i> Historial de Pedidos y Remitos
+            <i class="fa-solid fa-receipt text-emerald-400 mr-2"></i> Historial de Ventas y Remitos
           </h2>
-          <span class="text-[10px] text-slate-400">Tocar para ver y compartir</span>
+          <span class="text-[10px] text-slate-400">Tocar para ver ticket y enviar por WhatsApp</span>
         </div>
 
         <div class="overflow-x-auto rounded-xl glass-card border border-slate-800">
@@ -410,11 +407,11 @@
     <!-- PESTAÑA 3: STOCK -->
     <div id="tab-stock" class="tab-content space-y-6">
       
-      <!-- FORMULARIO MULTI-PRODUCTO PARA COMPRAS -->
+      <!-- FORMULARIO DE COMPRA MULTI-PRODUCTO -->
       <section class="glass-card p-4 rounded-2xl border border-blue-500/30">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-base font-bold text-white flex items-center">
-            <i class="fa-solid fa-truck-ramp-box text-blue-400 mr-2"></i> Cargar / Reponer Stock
+            <i class="fa-solid fa-truck-ramp-box text-blue-400 mr-2"></i> Ingreso / Reposición de Stock
           </h2>
           <span class="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full">
             Múltiples productos
@@ -431,7 +428,7 @@
           <div class="space-y-3 pt-1 border-t border-slate-800/80">
             <div class="flex justify-between items-center">
               <label class="block text-xs font-semibold text-slate-300">
-                <i class="fa-solid fa-boxes-packing text-blue-400 mr-1"></i> Artículos de la Compra
+                <i class="fa-solid fa-boxes-packing text-blue-400 mr-1"></i> Artículos a Ingresar
               </label>
               <span class="text-[10px] text-slate-400">Se agrega otro renglón al elegir</span>
             </div>
@@ -455,12 +452,12 @@
           </div>
 
           <button type="button" onclick="guardarCompra()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
-            <i class="fa-solid fa-plus mr-2"></i> Registrar Compra Completa
+            <i class="fa-solid fa-plus mr-2"></i> Registrar Ingreso Completo
           </button>
         </form>
       </section>
 
-      <!-- INVENTARIO ACTUAL DISPONIBLE -->
+      <!-- INVENTARIO ACTUAL DISPONIBLE (TARJETA COMPACTA) -->
       <section>
         <div class="flex justify-between items-center mb-2.5">
           <h2 class="text-sm font-semibold text-slate-300 flex items-center">
@@ -503,17 +500,17 @@
 
     </div>
 
-    <!-- PESTAÑA 4: GASTOS -->
+    <!-- PESTAÑA 4: GASTOS OPERATIVOS -->
     <div id="tab-gastos" class="tab-content space-y-6">
       
-      <section class="glass-card p-4 rounded-2xl border border-amber-500/30">
+      <section class="glass-card p-4 rounded-2xl border border-rose-500/30">
         <h2 class="text-base font-bold text-white mb-4 flex items-center">
-          <i class="fa-solid fa-gas-pump text-amber-400 mr-2"></i> Registrar Gasto del Día
+          <i class="fa-solid fa-gas-pump text-rose-400 mr-2"></i> Registrar Gasto del Día
         </h2>
         <form id="form-gasto" class="space-y-4">
           <div>
             <label class="block text-xs text-slate-400 mb-1">Fecha del Gasto</label>
-            <input type="date" id="input-gasto-fecha" class="w-full max-w-full box-border appearance-none bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
+            <input type="date" id="input-gasto-fecha" class="w-full max-w-full box-border appearance-none bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-rose-500">
           </div>
 
           <div>
@@ -523,18 +520,18 @@
               <option value="peaje">🛣️ Peaje / Estacionamiento</option>
               <option value="vehiculo">🔧 Mantenimiento Camioneta</option>
               <option value="comida">🥪 Almuerzo / Comida</option>
-              <option value="__NUEVO__" class="text-amber-400 font-bold">+ Crear Nuevo Tipo de Gasto</option>
+              <option value="__NUEVO__" class="text-blue-400 font-bold">+ Crear Nuevo Tipo de Gasto</option>
             </select>
           </div>
 
           <div id="campo-nuevo-gasto-categoria" class="hidden">
-            <label class="block text-xs text-amber-400 mb-1 font-medium">Nombre del Nuevo Tipo de Gasto</label>
-            <input type="text" id="input-nuevo-gasto-categoria" placeholder="Ej: Seguro, Publicidad, Insumos" class="w-full bg-slate-800 border border-amber-500/50 rounded-xl p-3 text-sm text-slate-200 focus:outline-none">
+            <label class="block text-xs text-blue-400 mb-1 font-medium">Nombre del Nuevo Tipo de Gasto</label>
+            <input type="text" id="input-nuevo-gasto-categoria" placeholder="Ej: Seguro, Carga, Insumos" class="w-full bg-slate-800 border border-blue-500/50 rounded-xl p-3 text-sm text-slate-200 focus:outline-none">
           </div>
 
           <div>
             <label class="block text-xs text-slate-400 mb-1">Monto ($)</label>
-            <input type="number" id="input-gasto-monto" placeholder="Ej: 15000" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-amber-400 focus:outline-none">
+            <input type="number" id="input-gasto-monto" placeholder="Ej: 15000" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-rose-400 focus:outline-none">
           </div>
 
           <div>
@@ -542,7 +539,7 @@
             <input type="text" id="input-gasto-descripcion" placeholder="Ej: Carga YPF Av. Mitre" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none">
           </div>
 
-          <button type="button" onclick="guardarGasto()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
+          <button type="button" onclick="guardarGasto()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
             <i class="fa-solid fa-receipt mr-2"></i> Guardar Gasto
           </button>
         </form>
@@ -550,7 +547,7 @@
 
       <section>
         <h2 class="text-sm font-semibold text-slate-300 mb-3 flex items-center">
-          <i class="fa-solid fa-clock-rotate-left text-amber-400 mr-2"></i> Historial de Gastos
+          <i class="fa-solid fa-clock-rotate-left text-rose-400 mr-2"></i> Historial de Gastos
         </h2>
         <div class="overflow-x-auto rounded-xl glass-card border border-slate-800">
           <table class="w-full text-left text-xs">
@@ -599,8 +596,8 @@
           </div>
 
           <div>
-            <label class="block text-xs text-slate-400 mb-1">Teléfono</label>
-            <input type="text" id="input-cliente-telefono" placeholder="Ej: 11-4567-8901" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none">
+            <label class="block text-xs text-slate-400 mb-1">Teléfono (WhatsApp)</label>
+            <input type="text" id="input-cliente-telefono" placeholder="Ej: 1145678901 (Sin 0 ni 15)" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none">
           </div>
 
           <button type="button" onclick="guardarClienteDirectorio()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
@@ -611,7 +608,7 @@
 
       <section>
         <h2 class="text-sm font-semibold text-slate-300 mb-3 flex items-center">
-          <i class="fa-solid fa-users text-emerald-400 mr-2"></i> Directorio de Clientes
+          <i class="fa-solid fa-users text-blue-400 mr-2"></i> Directorio de Clientes
         </h2>
         <div class="overflow-x-auto rounded-xl glass-card border border-slate-800">
           <table class="w-full text-left text-xs">
@@ -638,17 +635,19 @@
 
   </main>
 
-  <!-- MODAL EXCLUSIVO: TICKET / REMITO DE VENTA Y WHATSAPP -->
+  <!-- MODAL: TICKET / REMITO DIGITAL (WHATSAPP) -->
   <div id="modal-ticket-venta" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="glass-card w-full max-w-md p-5 rounded-3xl border border-amber-500/40 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+    <div class="glass-card w-full max-w-md p-5 rounded-2xl border border-slate-700 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
       
       <!-- Encabezado del Ticket -->
       <div class="flex justify-between items-start border-b border-slate-800 pb-3">
-        <div class="flex items-center space-x-3">
-          <img src="Logotipo.jpeg" alt="Logo IMPERIO" class="w-10 h-10 rounded-full object-cover border border-amber-500/40 shadow" onerror="this.style.display='none'">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+            <i class="fa-solid fa-receipt text-base"></i>
+          </div>
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 block">Comprobante de Entrega</span>
-            <h3 class="text-lg font-black text-white flex items-center gap-1 mt-0.5">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 block">Comprobante de Entrega</span>
+            <h3 class="text-base font-bold text-white flex items-center gap-1 mt-0.5">
               IMPERIO <span class="text-xs font-normal text-slate-400">• Remito</span>
             </h3>
             <p id="ticket-fecha" class="text-[11px] text-slate-400 mt-0.5"></p>
@@ -664,11 +663,11 @@
           <span id="ticket-cliente" class="font-bold text-slate-100 text-sm"></span>
         </div>
         <div class="flex justify-between items-center">
-          <span class="text-slate-400">Teléfono / Contacto:</span>
+          <span class="text-slate-400">Teléfono:</span>
           <span id="ticket-telefono" class="text-slate-300 font-medium"></span>
         </div>
         <div class="flex justify-between items-center">
-          <span class="text-slate-400">Dirección de Entrega:</span>
+          <span class="text-slate-400">Dirección:</span>
           <span id="ticket-direccion" class="text-slate-300"></span>
         </div>
         <div class="flex justify-between items-center pt-1 border-t border-slate-700/60">
@@ -695,12 +694,12 @@
       </div>
 
       <!-- Totalizadores Finales -->
-      <div class="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-emerald-500/10 to-teal-500/10 border border-amber-500/30 flex justify-between items-center">
+      <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-700 flex justify-between items-center">
         <div>
-          <span class="text-[10px] text-slate-400 block uppercase font-bold tracking-wider">Total a Cobrar</span>
-          <span id="ticket-total-bultos" class="text-xs text-amber-300 font-medium"></span>
+          <span class="text-[10px] text-slate-400 block uppercase font-bold tracking-wider">Total Pedido</span>
+          <span id="ticket-total-bultos" class="text-xs text-blue-400 font-medium"></span>
         </div>
-        <div id="ticket-total-monto" class="text-2xl font-black text-amber-400">$ 0</div>
+        <div id="ticket-total-monto" class="text-2xl font-black text-emerald-400">$ 0</div>
       </div>
 
       <!-- Botones de Acción: WhatsApp y Anular -->
@@ -722,7 +721,7 @@
     </div>
   </div>
 
-  <!-- MODAL: EDITAR PRODUCTO Y STOCK MÍNIMO -->
+  <!-- MODAL: EDITAR PRODUCTO Y CONFIGURAR STOCK MÍNIMO -->
   <div id="modal-editar-producto" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="glass-card w-full max-w-md p-5 rounded-2xl border border-blue-500/40 shadow-2xl space-y-4">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -746,11 +745,10 @@
             <input type="number" id="edit-prod-bultos-pallet" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none">
           </div>
           <div>
-            <label class="block text-amber-400 mb-1 font-bold">Stock Mínimo (Alerta)</label>
-            <input type="number" id="edit-prod-stock-minimo" placeholder="20" class="w-full bg-slate-800 border border-amber-500/50 rounded-xl p-3 text-sm font-bold text-amber-300 focus:outline-none focus:border-amber-400">
+            <label class="block text-blue-400 mb-1 font-bold">Stock Mínimo (Alerta)</label>
+            <input type="number" id="edit-prod-stock-minimo" placeholder="20" class="w-full bg-slate-800 border border-blue-500/50 rounded-xl p-3 text-sm font-bold text-blue-300 focus:outline-none focus:border-blue-400">
           </div>
         </div>
-        <p class="text-[11px] text-slate-400">Cuando el stock baje de este número, la aplicación mostrará la advertencia de reposición inmediata.</p>
       </div>
 
       <div class="flex space-x-3 pt-2">
@@ -764,7 +762,7 @@
     </div>
   </div>
 
-  <!-- MODAL: CALCULADORA DE PRECIOS Y MARGEN -->
+  <!-- MODAL: CALCULADORA DE PRECIOS -->
   <div id="modal-calculadora" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="glass-card w-full max-w-md p-5 rounded-2xl border border-indigo-500/40 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
       <div class="flex justify-between items-start border-b border-slate-800 pb-3">
@@ -772,7 +770,7 @@
           <h3 class="text-base font-bold text-white flex items-center gap-2">
             <i class="fa-solid fa-calculator text-indigo-400"></i> Calculadora de Precios
           </h3>
-          <p class="text-[11px] text-slate-400 mt-0.5">Definí tu margen y obtené el precio sugerido</p>
+          <p class="text-[11px] text-slate-400 mt-0.5">Definí el margen y calculá el precio óptimo</p>
         </div>
         <button onclick="cerrarCalculadora()" class="text-slate-400 hover:text-white text-lg p-1">✕</button>
       </div>
@@ -846,7 +844,7 @@
     </div>
   </div>
 
-  <!-- MODAL DE DETALLE DRILL-DOWN -->
+  <!-- MODAL: DETALLE DRILL-DOWN -->
   <div id="modal-detalle-financiero" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="glass-card w-full max-w-md p-5 rounded-2xl border border-slate-700 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-start border-b border-slate-800 pb-3">
@@ -861,7 +859,7 @@
 
       <div class="pt-2 border-t border-slate-800">
         <button type="button" onclick="cerrarModalDetalle()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2.5 rounded-xl">
-          Entendido, cerrar
+          Cerrar
         </button>
       </div>
     </div>
@@ -958,10 +956,10 @@
 
   <!-- Modal Gasto -->
   <div id="modal-editar-gasto" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="glass-card w-full max-w-md p-5 rounded-2xl border border-amber-500/40 shadow-2xl space-y-4">
+    <div class="glass-card w-full max-w-md p-5 rounded-2xl border border-rose-500/40 shadow-2xl space-y-4">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <h3 class="text-base font-bold text-white flex items-center">
-          <i class="fa-solid fa-pen-to-square text-amber-400 mr-2"></i> Editar Registro de Gasto
+          <i class="fa-solid fa-pen-to-square text-rose-400 mr-2"></i> Editar Registro de Gasto
         </h3>
         <button onclick="cerrarModalEditarGasto()" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
@@ -977,7 +975,7 @@
         </div>
         <div>
           <label class="block text-xs text-slate-400 mb-1">Monto ($)</label>
-          <input type="number" id="edit-gasto-monto" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-amber-400 focus:outline-none">
+          <input type="number" id="edit-gasto-monto" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-rose-400 focus:outline-none">
         </div>
         <div>
           <label class="block text-xs text-slate-400 mb-1">Detalle / Notas</label>
@@ -987,7 +985,7 @@
       <div class="space-y-2 pt-2">
         <div class="flex space-x-3">
           <button type="button" onclick="cerrarModalEditarGasto()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl">Cancelar</button>
-          <button type="button" onclick="guardarEdicionGasto()" class="w-1/2 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl shadow-lg">Guardar</button>
+          <button type="button" onclick="guardarEdicionGasto()" class="w-1/2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl shadow-lg">Guardar</button>
         </div>
         <button type="button" onclick="eliminarGasto()" class="w-full bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2">
           <i class="fa-solid fa-trash-can"></i> Eliminar Registro de Gasto
@@ -998,7 +996,7 @@
 
   <!-- NAVEGACIÓN INFERIOR (5 PESTAÑAS) -->
   <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 border-t border-slate-800 p-2 flex justify-around items-center backdrop-blur z-50 max-w-lg mx-auto">
-    <button onclick="cambiarTab('inicio', this)" class="nav-btn active flex flex-col items-center text-amber-400 text-xs py-1">
+    <button onclick="cambiarTab('inicio', this)" class="nav-btn active flex flex-col items-center text-blue-400 text-xs py-1">
       <i class="fa-solid fa-house text-lg mb-1"></i>
       <span>Inicio</span>
     </button>
@@ -1021,7 +1019,7 @@
   </nav>
 
   <script>
-    // 1. CONEXIÓN A SUPABASE
+    // 1. CREDENCIALES SUPABASE IMPERIO
     const SUPABASE_URL = 'https://yfievpplxdvirblqedsw.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_oYjxByiDy_GXjqxaVsWNXg_qMBKahMS';
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -1116,7 +1114,6 @@
       return true;
     }
 
-    // NOTIFICACIÓN FLOTANTE
     function mostrarNotificacion(mensaje) {
       const toast = document.createElement('div');
       toast.className = 'fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-emerald-500 text-white px-5 py-3 rounded-2xl font-bold text-sm shadow-2xl flex items-center space-x-2 transition-all duration-300 transform translate-y-0 opacity-100 border border-emerald-400';
@@ -1130,7 +1127,7 @@
       }, 2500);
     }
 
-    // 2. EXPORTAR A EXCEL (.XLSX)
+    // EXPORTAR EXCEL
     async function exportarExcel() {
       mostrarNotificacion('Generando backup en Excel...');
 
@@ -1199,14 +1196,14 @@
 
         const fechaHoy = obtenerFechaLocalISO(new Date());
         XLSX.writeFile(wb, `Backup_IMPERIO_${fechaHoy}.xlsx`);
-        mostrarNotificacion('¡Backup Excel descargado con éxito!');
+        mostrarNotificacion('¡Backup descargado!');
       } catch (err) {
         console.error('Error al exportar Excel:', err);
-        alert('Ocurrió un error al generar el backup: ' + err.message);
+        alert('Ocurrió un error: ' + err.message);
       }
     }
 
-    // 3. CALCULADORA DE PRECIOS
+    // CALCULADORA
     function abrirCalculadora() {
       const select = document.getElementById('calc-producto');
       select.innerHTML = '<option value="">Ingresar costo manual...</option>';
@@ -1279,45 +1276,33 @@
       inicializarFilasCompra();
     }
 
-    // 4. CAMBIO DE PESTAÑAS
     function cambiarTab(tabName, btn) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => {
-        el.classList.remove('text-amber-400');
+        el.classList.remove('text-blue-400');
         el.classList.add('text-slate-400');
       });
       
       document.getElementById('tab-' + tabName).classList.add('active');
       btn.classList.remove('text-slate-400');
-      btn.classList.add('text-amber-400');
+      btn.classList.add('text-blue-400');
     }
 
     function toggleNuevoCliente(val) {
-      const campo = document.getElementById('campo-nuevo-cliente');
-      if (val === '__NUEVO__') {
-        campo.classList.remove('hidden');
-      } else {
-        campo.classList.add('hidden');
-      }
+      document.getElementById('campo-nuevo-cliente').classList.toggle('hidden', val !== '__NUEVO__');
     }
 
     function toggleNuevoGastoCategoria(val) {
-      const campo = document.getElementById('campo-nuevo-gasto-categoria');
-      if (val === '__NUEVO__') {
-        campo.classList.remove('hidden');
-      } else {
-        campo.classList.add('hidden');
-      }
+      document.getElementById('campo-nuevo-gasto-categoria').classList.toggle('hidden', val !== '__NUEVO__');
     }
 
-    // 5. NAVEGADOR TEMPORAL
     function cambiarModoTiempo(modo, btn) {
       modoTiempo = modo;
       document.querySelectorAll('.modo-tiempo-btn').forEach(b => {
-        b.classList.remove('bg-amber-500', 'text-slate-950', 'font-bold');
+        b.classList.remove('bg-blue-600', 'text-white', 'font-bold');
         b.classList.add('text-slate-400');
       });
-      btn.classList.add('bg-amber-500', 'text-slate-950', 'font-bold');
+      btn.classList.add('bg-blue-600', 'text-white', 'font-bold');
       btn.classList.remove('text-slate-400');
 
       const barra = document.getElementById('barra-navegacion-temporal');
@@ -1348,7 +1333,7 @@
       const subEtiqueta = document.getElementById('sub-etiqueta-tiempo');
 
       if (modoTiempo === 'todo') {
-        contenedor.innerHTML = `<i class="fa-solid fa-infinity text-amber-400 text-xs"></i> <span>Todo el Histórico</span>`;
+        contenedor.innerHTML = `<i class="fa-solid fa-infinity text-blue-400 text-xs"></i> <span>Todo el Histórico</span>`;
         subEtiqueta.textContent = 'Balance acumulado completo';
         return;
       }
@@ -1369,7 +1354,7 @@
           contenedor.innerHTML = `<i class="fa-regular fa-calendar-check text-emerald-400 text-xs"></i> <span>Hoy • ${texto}</span>`;
           subEtiqueta.textContent = 'Día actual';
         } else if (cursorStr === ayerStr) {
-          contenedor.innerHTML = `<i class="fa-regular fa-calendar text-amber-400 text-xs"></i> <span>Ayer • ${texto}</span>`;
+          contenedor.innerHTML = `<i class="fa-regular fa-calendar text-blue-400 text-xs"></i> <span>Ayer • ${texto}</span>`;
           subEtiqueta.textContent = 'Día anterior';
         } else {
           contenedor.innerHTML = `<i class="fa-regular fa-calendar text-blue-400 text-xs"></i> <span>${texto}</span>`;
@@ -1409,7 +1394,7 @@
       }
     }
 
-    // 6. MOTOR FINANCIERO Y RANKING DE PRODUCTOS
+    // MÉTRICAS Y PODIO
     function calcularMetricasFinancieras() {
       const ventasPeriodo = ventasGlobales.filter(v => coincidePeriodoActual(v.fecha || v.created_at));
 
@@ -1464,7 +1449,7 @@
       document.getElementById('metric-ganancia-bruta').textContent = `$ ${Math.round(gananciaBruta).toLocaleString()}`;
       document.getElementById('metric-gastos-totales').textContent = `$ ${Math.round(gastosTotales).toLocaleString()}`;
 
-      // RENDER DEL RANKING
+      // RENDER RANKING
       const listaRendimiento = document.getElementById('lista-rendimiento-productos');
       const badgeTotalBultos = document.getElementById('badge-total-bultos-periodo');
       badgeTotalBultos.textContent = `${cantidadBultosVendidos} bultos totales`;
@@ -1499,7 +1484,7 @@
                 </div>
               </div>
               <div class="text-right">
-                <div class="text-sm font-bold text-amber-400">
+                <div class="text-sm font-bold text-blue-400">
                   ${item.bultos} <span class="text-[11px] font-normal text-slate-400">Bultos</span>
                 </div>
                 <div class="text-[11px] text-emerald-400 font-medium">~${pallets} Pallets</div>
@@ -1510,7 +1495,7 @@
       }
     }
 
-    // 7. MODAL DETALLE DRILL-DOWN
+    // AUDITORÍA DRILL-DOWN
     function abrirDetalleFinanciero(tipo) {
       const titulo = document.getElementById('modal-detalle-titulo');
       const subtitulo = document.getElementById('modal-detalle-subtitulo');
@@ -1556,7 +1541,7 @@
             </div>
             <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/60">
               <span class="text-slate-300 font-medium">(-) Gastos Operativos</span>
-              <span class="font-bold text-amber-400">- $ ${totalGastos.toLocaleString()}</span>
+              <span class="font-bold text-rose-400">- $ ${totalGastos.toLocaleString()}</span>
             </div>
             <div class="flex justify-between items-center p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 mt-3">
               <div>
@@ -1652,7 +1637,7 @@
           }
         }
       } else if (tipo === 'gastos') {
-        titulo.innerHTML = `<i class="fa-solid fa-gas-pump text-amber-400"></i> Detalle de Gastos`;
+        titulo.innerHTML = `<i class="fa-solid fa-gas-pump text-rose-400"></i> Detalle de Gastos`;
         subtitulo.textContent = `${gastosPeriodo.length} gasto(s) registrados`;
 
         if (gastosPeriodo.length === 0) {
@@ -1665,13 +1650,13 @@
                   <div class="font-semibold text-slate-100 capitalize">${g.categoria}</div>
                   <div class="text-[10px] text-slate-400">${g.descripcion || 'Sin detalle'} • ${g.fecha || ''}</div>
                 </div>
-                <div class="font-bold text-amber-400">$ ${Number(g.monto).toLocaleString()}</div>
+                <div class="font-bold text-rose-400">$ ${Number(g.monto).toLocaleString()}</div>
               </div>
             `;
           });
         }
       } else if (tipo === 'deudas') {
-        titulo.innerHTML = `<i class="fa-solid fa-receipt text-amber-400"></i> Cuentas Corrientes Pendientes`;
+        titulo.innerHTML = `<i class="fa-solid fa-receipt text-blue-400"></i> Cuentas Corrientes Pendientes`;
         subtitulo.textContent = 'Clientes con saldo pendiente';
 
         const deudores = clientesGlobales.filter(c => Number(c.saldo_deuda || 0) > 0);
@@ -1704,7 +1689,7 @@
       document.getElementById('modal-detalle-financiero').classList.add('hidden');
     }
 
-    // 8. PRODUCTOS E INVENTARIO
+    // INVENTARIO ACTUAL
     async function cargarProductos() {
       const { data: productos, error } = await db.from('productos').select('*');
       if (error) console.error('Error al cargar productos:', error);
@@ -1738,14 +1723,14 @@
         listaStock.innerHTML += `
           <div class="p-3 flex items-center justify-between hover:bg-slate-800/30 transition-colors ${esBajoStock ? 'bg-rose-500/5' : ''}">
             <div class="flex items-center space-x-3">
-              <div class="w-9 h-9 rounded-lg ${esBajoStock ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'} flex items-center justify-center font-bold text-base">
+              <div class="w-9 h-9 rounded-lg ${esBajoStock ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'} flex items-center justify-center font-bold text-base">
                 🥤
               </div>
               <div>
                 <div class="font-semibold text-sm text-slate-100 flex items-center gap-1.5">
                   <span>${p.nombre}</span>
                   ${esBajoStock ? '<span class="text-[9px] bg-rose-500/20 text-rose-300 border border-rose-500/30 px-1.5 py-0.5 rounded font-medium">Bajo stock</span>' : ''}
-                  <button onclick="abrirModalEditarProducto(${p.id})" title="Configurar producto" class="text-slate-500 hover:text-amber-400 active:scale-95 transition-all text-xs p-0.5">
+                  <button onclick="abrirModalEditarProducto(${p.id})" title="Configurar producto" class="text-slate-500 hover:text-blue-400 active:scale-95 transition-all text-xs p-0.5">
                     <i class="fa-solid fa-sliders text-[11px]"></i>
                   </button>
                 </div>
@@ -1831,7 +1816,7 @@
       cargarTodo();
     }
 
-    // 9. FORMULARIO MULTI-PRODUCTO VENTAS
+    // MULTI-PRODUCTO VENTAS
     function obtenerOpcionesProductosVentaHTML() {
       let opts = '<option value="">Seleccionar producto...</option>';
       productosGlobales.forEach(p => {
@@ -2053,7 +2038,7 @@
       cargarTodo();
     }
 
-    // 10. HISTORIAL VENTAS AGRUPADO
+    // HISTORIAL VENTAS AGRUPADO
     async function cargarHistorialVentas() {
       const tbody = document.getElementById('tabla-historial-ventas');
       const { data: ventas, error } = await db.from('ventas').select('*');
@@ -2122,11 +2107,11 @@
               ${ped.cliente_nombre}
               ${etiquetaProds}
             </td>
-            <td class="p-2.5 text-amber-400 font-medium">${ped.total_bultos} bultos</td>
+            <td class="p-2.5 text-blue-400 font-medium">${ped.total_bultos} bultos</td>
             <td class="p-2.5 text-right font-bold text-emerald-400 text-sm">$ ${ped.monto_total.toLocaleString()}</td>
             <td class="p-2.5 text-right text-[11px] text-slate-300">${pagoBadge}</td>
             <td class="p-2.5 text-center">
-              <button onclick="event.stopPropagation(); abrirTicketVenta('${ped.idKey}')" class="text-amber-400 hover:text-white p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 active:scale-95 transition-all" title="Ver Remito / Ticket">
+              <button onclick="event.stopPropagation(); abrirTicketVenta('${ped.idKey}')" class="text-blue-400 hover:text-white p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/30 active:scale-95 transition-all" title="Ver Remito / Ticket">
                 <i class="fa-solid fa-receipt text-xs"></i>
               </button>
             </td>
@@ -2135,7 +2120,7 @@
       });
     }
 
-    // 11. REMITO DIGITAL
+    // REMITO DIGITAL
     function abrirTicketVenta(idKey) {
       const pedido = pedidosVentasGlobales.find(p => p.idKey === idKey);
       if (!pedido) return;
@@ -2165,7 +2150,7 @@
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/60">
             <td class="p-2 font-medium text-slate-100">${item.producto_nombre}</td>
-            <td class="p-2 text-center text-amber-400 font-bold">${item.cantidad_packs} bultos</td>
+            <td class="p-2 text-center text-blue-400 font-bold">${item.cantidad_packs} bultos</td>
             <td class="p-2 text-right font-bold text-slate-100">$ ${Number(item.monto_total).toLocaleString()}</td>
           </tr>
         `;
@@ -2191,21 +2176,21 @@
       if (ped.metodo_pago === 'transferencia') formaPagoTexto = 'Transferencia';
       if (ped.metodo_pago === 'cuenta_corriente') formaPagoTexto = 'Cuenta Corriente (Fiado)';
 
-      let mensaje = `🏛️ *DISTRIBUIDORA IMPERIO*\n`;
-      mensaje += `🧾 *Comprobante de Entrega*\n`;
-      mensaje += `📅 *Fecha:* ${ped.fecha}\n`;
-      mensaje += `👤 *Cliente:* ${ped.cliente_nombre}\n\n`;
-      mensaje += `🛒 *Detalle del Pedido:*\n`;
+      let mensaje = `*DISTRIBUIDORA IMPERIO*\n`;
+      mensaje += `*Comprobante de Entrega*\n`;
+      mensaje += `*Fecha:* ${ped.fecha}\n`;
+      mensaje += `*Cliente:* ${ped.cliente_nombre}\n\n`;
+      mensaje += `*Detalle del Pedido:*\n`;
 
       ped.items.forEach(item => {
         mensaje += `• *${item.producto_nombre}* x ${item.cantidad_packs} bultos: $${Number(item.monto_total).toLocaleString()}\n`;
       });
 
       mensaje += `\n--------------------------------\n`;
-      mensaje += `📦 *Volumen Total:* ${ped.total_bultos} bultos\n`;
-      mensaje += `💰 *TOTAL:* $${ped.monto_total.toLocaleString()}\n`;
-      mensaje += `💳 *Condición de Pago:* ${formaPagoTexto}\n\n`;
-      mensaje += `¡Muchas gracias por confiar en *IMPERIO*! 🤝`;
+      mensaje += `*Volumen Total:* ${ped.total_bultos} bultos\n`;
+      mensaje += `*TOTAL:* $${ped.monto_total.toLocaleString()}\n`;
+      mensaje += `*Condición de Pago:* ${formaPagoTexto}\n\n`;
+      mensaje += `¡Muchas gracias por su compra!`;
 
       let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensaje)}`;
 
@@ -2249,11 +2234,11 @@
       if (errDel) return alert('Error al anular pedido: ' + errDel.message);
 
       cerrarTicketVenta();
-      mostrarNotificacion('¡Pedido anulado y stock devuelto al camión!');
+      mostrarNotificacion('¡Pedido anulado y stock devuelto!');
       cargarTodo();
     }
 
-    // 12. COMPRAS MULTI-PRODUCTO
+    // MULTI-PRODUCTO COMPRAS
     function obtenerOpcionesProductosCompraHTML() {
       let opts = `
         <option value="">Seleccionar producto existente...</option>
@@ -2450,7 +2435,7 @@
           packsPorPallet = Number(f.querySelector('.item-nuevo-pallet-packs').value || 100);
           const stockMin = Number(f.querySelector('.item-nuevo-stock-minimo').value || 20);
 
-          if (!nuevoNombre) return alert('Escribí el nombre del nuevo producto en el renglón correspondiente.');
+          if (!nuevoNombre) return alert('Escribí el nombre del nuevo producto.');
 
           const totalPacks = (pallets * packsPorPallet) + packsSueltos;
           if (totalPacks <= 0) return alert(`Ingresá la cantidad de bultos o pallets comprados para "${nuevoNombre}".`);
@@ -2551,7 +2536,7 @@
           <tr class="hover:bg-slate-800/40">
             <td class="p-2.5 text-slate-400 text-[11px]">${fechaFmt}</td>
             <td class="p-2.5 font-semibold text-slate-100">${producto}</td>
-            <td class="p-2.5 text-cyan-400">${packs} bultos</td>
+            <td class="p-2.5 text-blue-400">${packs} bultos</td>
             <td class="p-2.5 text-right font-bold text-emerald-400">$ ${total.toLocaleString()}</td>
             <td class="p-2.5 text-right text-violet-400">$ ${costoPack}</td>
             <td class="p-2.5 text-center">
@@ -2651,7 +2636,7 @@
       cargarTodo();
     }
 
-    // 13. GASTOS
+    // GASTOS
     function actualizarSelectCategoriasGasto() {
       const select = document.getElementById('select-gasto-categoria');
       const baseCats = {
@@ -2675,7 +2660,7 @@
       customCats.forEach(cat => {
         html += `<option value="${cat}">📁 ${cat}</option>`;
       });
-      html += `<option value="__NUEVO__" class="text-amber-400 font-bold">+ Crear Nuevo Tipo de Gasto</option>`;
+      html += `<option value="__NUEVO__" class="text-blue-400 font-bold">+ Crear Nuevo Tipo de Gasto</option>`;
 
       const valorPrevio = select.value;
       select.innerHTML = html;
@@ -2755,11 +2740,11 @@
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40">
             <td class="p-2.5 text-slate-400 text-[11px]">${fechaFmt}</td>
-            <td class="p-2.5 font-semibold text-amber-400 text-[11px]">${catText}</td>
+            <td class="p-2.5 font-semibold text-rose-400 text-[11px]">${catText}</td>
             <td class="p-2.5 text-slate-300 text-xs">${g.descripcion || '-'}</td>
             <td class="p-2.5 text-right font-bold text-slate-100">$ ${monto.toLocaleString()}</td>
             <td class="p-2.5 text-center">
-              <button onclick="abrirModalEditarGasto(${g.id})" class="text-amber-400 hover:text-amber-300 p-1 rounded-lg bg-amber-500/10 border border-amber-500/20">
+              <button onclick="abrirModalEditarGasto(${g.id})" class="text-rose-400 hover:text-rose-300 p-1 rounded-lg bg-rose-500/10 border border-rose-500/20">
                 <i class="fa-solid fa-pen-to-square"></i>
               </button>
             </td>
@@ -2847,7 +2832,7 @@
       cargarTodo();
     }
 
-    // 14. CLIENTES
+    // CLIENTES
     async function guardarClienteDirectorio() {
       const nombre = document.getElementById('input-cliente-nombre').value.trim();
       const direccion = document.getElementById('input-cliente-direccion').value.trim();
