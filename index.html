@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IMPERIO - Plataforma de Distribución</title>
+  <!-- Favicon / Isotipo en pestaña del navegador -->
+  <link rel="icon" type="image/jpeg" href="Logotipo.jpeg">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Íconos -->
@@ -13,27 +15,86 @@
   <!-- SheetJS para exportar a Excel (.xlsx) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
+    :root {
+      --bg-body: #080b11;
+      --bg-header-nav: rgba(11, 15, 25, 0.95);
+      --bg-card: #0f1523;
+      --bg-card-sub: #090d16;
+      --border-card: #1e293b;
+      --border-sub: #1e293b;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    body.theme-light {
+      --bg-body: #f8fafc;
+      --bg-header-nav: rgba(255, 255, 255, 0.95);
+      --bg-card: #ffffff;
+      --bg-card-sub: #f1f5f9;
+      --border-card: #e2e8f0;
+      --border-sub: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+    }
+
     body {
-      background-color: #080b11;
-      color: #f1f5f9;
+      background-color: var(--bg-body);
+      color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       min-height: 100vh;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
+
     .panel-card {
-      background-color: #0f1523;
-      border: 1px solid #1e293b;
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }
+
     .panel-input {
-      background-color: #090d16;
-      border: 1px solid #1e293b;
-      color: #f8fafc;
-      transition: border-color 0.15s ease;
+      background-color: var(--bg-card-sub);
+      border: 1px solid var(--border-sub);
+      color: var(--text-main);
+      transition: border-color 0.15s ease, background-color 0.2s ease;
     }
     .panel-input:focus {
       outline: none;
       border-color: #0284c7;
     }
+
+    /* Overrides temáticos para modo claro */
+    body.theme-light .text-white,
+    body.theme-light .text-slate-100,
+    body.theme-light .text-slate-200 {
+      color: #0f172a !important;
+    }
+    body.theme-light .text-slate-300,
+    body.theme-light .text-slate-400 {
+      color: #475569 !important;
+    }
+    body.theme-light .text-slate-500 {
+      color: #64748b !important;
+    }
+    body.theme-light header,
+    body.theme-light nav {
+      background-color: var(--bg-header-nav) !important;
+      border-color: var(--border-card) !important;
+    }
+    body.theme-light .bg-slate-900,
+    body.theme-light .bg-slate-950 {
+      background-color: #f1f5f9 !important;
+      border-color: #e2e8f0 !important;
+    }
+    body.theme-light .bg-slate-800 {
+      background-color: #e2e8f0 !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+    body.theme-light .divide-slate-800\/60 > * {
+      border-color: #f1f5f9 !important;
+    }
+
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     
@@ -45,11 +106,12 @@
 </head>
 <body class="pb-28 antialiased selection:bg-sky-500 selection:text-white">
 
-  <!-- HEADER MODERNO IMPERIO v3.0 -->
+  <!-- HEADER CON SELECTOR DE TEMA -->
   <header class="px-4 py-3 border-b border-slate-800 bg-[#0b0f19]/95 sticky top-0 backdrop-blur z-50 flex justify-between items-center">
     <div class="flex items-center gap-2.5">
-      <div class="w-8 h-8 rounded-lg bg-sky-600 flex items-center justify-center font-black text-slate-950 text-sm shadow-md shadow-sky-500/20">
-        <i class="fa-solid fa-crown text-xs text-white"></i>
+      <div class="w-8 h-8 rounded-lg bg-sky-600 flex items-center justify-center font-black text-slate-950 text-sm shadow-md shadow-sky-500/20 overflow-hidden">
+        <img src="Logotipo.jpeg" alt="Logo" class="w-full h-full object-cover hidden" id="header-logo-img" onload="this.classList.remove('hidden')">
+        <i class="fa-solid fa-crown text-xs text-white" id="header-logo-icon"></i>
       </div>
       <div>
         <h1 class="text-base font-black tracking-wider uppercase text-white leading-none">
@@ -60,6 +122,11 @@
     </div>
 
     <div class="flex items-center gap-2">
+      <!-- Botón Dark / Light Mode -->
+      <button id="btn-theme-toggle" onclick="toggleTema()" title="Cambiar a Modo Claro / Oscuro" class="h-8 w-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 flex items-center justify-center border border-slate-700 transition-all active:scale-95">
+        <i id="theme-icon" class="fa-solid fa-sun text-xs"></i>
+      </button>
+
       <!-- Calculadora de Precios -->
       <button onclick="abrirCalculadora()" title="Calcular márgenes y precios sugeridos" class="h-8 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition-all">
         <i class="fa-solid fa-calculator text-sky-400 text-xs"></i> Precios
@@ -93,7 +160,7 @@
         </button>
       </section>
 
-      <!-- Navegador de Fecha (Flechas) -->
+      <!-- Navegador de Fecha -->
       <section id="barra-navegacion-temporal" class="panel-card px-3 py-2 rounded-xl flex items-center justify-between">
         <button onclick="moverTiempo(-1)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-all">
           <i class="fa-solid fa-chevron-left text-xs"></i>
@@ -112,7 +179,7 @@
         </button>
       </section>
 
-      <!-- Tarjeta Hero: Ganancia Neta Real -->
+      <!-- Tarjeta Hero: Ganancia Neta -->
       <section onclick="abrirDetalleFinanciero('neta')" class="panel-card p-4 rounded-xl border-l-4 border-l-emerald-500 cursor-pointer hover:border-slate-700 transition-all">
         <div class="flex justify-between items-center">
           <div>
@@ -137,7 +204,6 @@
 
       <!-- Desglose Financiero -->
       <section class="grid grid-cols-2 gap-2.5">
-        
         <div onclick="abrirDetalleFinanciero('ventas')" class="panel-card p-3 rounded-xl cursor-pointer hover:border-slate-700 transition-all">
           <div class="flex items-center justify-between text-slate-400 text-[11px]">
             <span>Facturación</span>
@@ -173,10 +239,9 @@
           <div class="text-base font-bold text-rose-400 mt-1" id="metric-gastos-totales">$ 0</div>
           <div class="text-[10px] text-slate-400 mt-0.5">Nafta y varios</div>
         </div>
-
       </section>
 
-      <!-- Saldo Fiado / Cuenta Corriente -->
+      <!-- Saldo Fiado -->
       <section onclick="abrirDetalleFinanciero('deudas')" class="panel-card p-3 rounded-xl flex justify-between items-center cursor-pointer border-slate-800 hover:border-slate-700 transition-all">
         <div>
           <span class="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
@@ -189,7 +254,7 @@
         </div>
       </section>
 
-      <!-- Ranking de Ventas por Producto en el Período -->
+      <!-- Ranking de Ventas por Producto -->
       <section class="panel-card p-3.5 rounded-xl">
         <div class="flex justify-between items-center mb-2">
           <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
@@ -202,7 +267,7 @@
         </div>
       </section>
 
-      <!-- Alerta Preventiva de Stock Mínimo (Al Pie de Inicio) -->
+      <!-- Alerta Stock Mínimo -->
       <section id="contenedor-alerta-stock" class="hidden">
         <div class="panel-card p-3.5 rounded-xl border border-rose-500/30 bg-rose-500/5 space-y-2">
           <div class="flex items-center justify-between">
@@ -222,7 +287,6 @@
 
     <!-- PESTAÑA 2: VENTAS -->
     <div id="tab-ventas" class="tab-content space-y-4">
-      
       <section class="panel-card p-4 rounded-xl">
         <h2 class="text-sm font-bold text-white mb-3 flex items-center">
           <i class="fa-solid fa-cart-shopping text-sky-400 mr-2"></i> Registrar Venta
@@ -280,13 +344,12 @@
             </div>
           </div>
 
-          <button type="button" onclick="guardarVenta()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 rounded-lg text-xs shadow-md shadow-sky-950 transition-all">
+          <button type="button" onclick="guardarVenta()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 rounded-lg text-xs shadow-md transition-all">
             <i class="fa-solid fa-check mr-1.5"></i> Confirmar Venta
           </button>
         </form>
       </section>
 
-      <!-- Historial de Ventas con Remito y WhatsApp -->
       <section>
         <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center">
           <i class="fa-solid fa-clock-rotate-left text-sky-400 mr-2"></i> Registro de Ventas
@@ -310,13 +373,10 @@
           </table>
         </div>
       </section>
-
     </div>
 
     <!-- PESTAÑA 3: STOCK -->
     <div id="tab-stock" class="tab-content space-y-4">
-      
-      <!-- Carga de Reposición -->
       <section class="panel-card p-4 rounded-xl">
         <h2 class="text-sm font-bold text-white mb-3 flex items-center">
           <i class="fa-solid fa-truck-ramp-box text-sky-400 mr-2"></i> Ingreso / Reposición
@@ -375,7 +435,6 @@
         </form>
       </section>
 
-      <!-- Inventario Actual Disponible (Tarjeta Compacta Unificada) -->
       <section>
         <div class="flex justify-between items-center mb-2">
           <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center">
@@ -390,7 +449,6 @@
         </div>
       </section>
 
-      <!-- Historial de Compras -->
       <section>
         <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center">
           <i class="fa-solid fa-clock-rotate-left text-sky-400 mr-2"></i> Historial de Compras
@@ -415,12 +473,10 @@
           </table>
         </div>
       </section>
-
     </div>
 
     <!-- PESTAÑA 4: GASTOS -->
     <div id="tab-gastos" class="tab-content space-y-4">
-      
       <section class="panel-card p-4 rounded-xl">
         <h2 class="text-sm font-bold text-white mb-3 flex items-center">
           <i class="fa-solid fa-gas-pump text-rose-400 mr-2"></i> Registrar Gasto del Día
@@ -486,12 +542,10 @@
           </table>
         </div>
       </section>
-
     </div>
 
     <!-- PESTAÑA 5: CLIENTES -->
     <div id="tab-clientes" class="tab-content space-y-4">
-      
       <section class="panel-card p-4 rounded-xl">
         <h2 class="text-sm font-bold text-white mb-3 flex items-center">
           <i class="fa-solid fa-user-plus text-sky-400 mr-2"></i> Registrar Cliente
@@ -547,7 +601,6 @@
           </table>
         </div>
       </section>
-
     </div>
 
   </main>
@@ -563,9 +616,7 @@
         <button onclick="cerrarTicket()" class="text-slate-400 hover:text-white text-base">✕</button>
       </div>
 
-      <div id="ticket-cuerpo" class="space-y-2 font-mono text-[11px] bg-slate-950/80 p-3 rounded-lg border border-slate-800 text-slate-300">
-        <!-- Render dinámico del ticket -->
-      </div>
+      <div id="ticket-cuerpo" class="space-y-2 font-mono text-[11px] bg-slate-950/80 p-3 rounded-lg border border-slate-800 text-slate-300"></div>
 
       <div class="space-y-2 pt-1">
         <button id="btn-enviar-whatsapp" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 shadow-md">
@@ -659,7 +710,7 @@
     </div>
   </div>
 
-  <!-- MODAL: EDITAR / CONFIGURAR PRODUCTO Y STOCK MÍNIMO -->
+  <!-- MODAL: EDITAR PRODUCTO -->
   <div id="modal-editar-producto" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="panel-card w-full max-w-sm p-4 rounded-xl border border-slate-700 shadow-2xl space-y-3 text-xs">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
@@ -692,7 +743,7 @@
     </div>
   </div>
 
-  <!-- MODAL: EDITAR / ELIMINAR CLIENTE -->
+  <!-- MODAL: EDITAR CLIENTE -->
   <div id="modal-editar-cliente" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="panel-card w-full max-w-sm p-4 rounded-xl border border-slate-700 shadow-2xl space-y-3 text-xs">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
@@ -735,7 +786,7 @@
     </div>
   </div>
 
-  <!-- BARRA DE NAVEGACIÓN INFERIOR (ESTILO MINIMALISTA) -->
+  <!-- NAVEGACIÓN INFERIOR -->
   <nav class="fixed bottom-0 left-0 right-0 bg-[#090d16]/95 border-t border-slate-800 p-2 flex justify-around items-center z-50 max-w-lg mx-auto backdrop-blur">
     <button onclick="cambiarTab('inicio', this)" class="nav-btn active flex flex-col items-center text-sky-400 text-[11px] font-semibold py-1">
       <i class="fa-solid fa-chart-simple text-base mb-0.5"></i> Inicio
@@ -755,7 +806,7 @@
   </nav>
 
   <script>
-    // CREDENCIALES ACTIVAS SUPABASE
+    // SUPABASE CREDENCIALES
     const SUPABASE_URL = 'https://yfievpplxdvirblqedsw.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_oYjxByiDy_GXjqxaVsWNXg_qMBKahMS';
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -769,7 +820,35 @@
     let modoTiempo = 'dia';
     let cursorFecha = new Date();
 
+    // GESTIÓN DE TEMA CLARO / OSCURO (LOCALSTORAGE)
+    function inicializarTema() {
+      const temaGuardado = localStorage.getItem('imperio_theme') || 'dark';
+      aplicarTema(temaGuardado);
+    }
+
+    function toggleTema() {
+      const esClaro = document.body.classList.contains('theme-light');
+      const nuevoTema = esClaro ? 'dark' : 'light';
+      aplicarTema(nuevoTema);
+      localStorage.setItem('imperio_theme', nuevoTema);
+    }
+
+    function aplicarTema(tema) {
+      const icon = document.getElementById('theme-icon');
+      const btn = document.getElementById('btn-theme-toggle');
+      if (tema === 'light') {
+        document.body.classList.add('theme-light');
+        icon.className = 'fa-solid fa-moon text-xs text-indigo-500';
+        btn.title = 'Cambiar a Modo Oscuro';
+      } else {
+        document.body.classList.remove('theme-light');
+        icon.className = 'fa-solid fa-sun text-xs text-amber-400';
+        btn.title = 'Cambiar a Modo Claro';
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      inicializarTema();
       const hoy = obtenerFechaLocalISO(new Date());
       document.getElementById('input-compra-fecha').value = hoy;
       document.getElementById('input-venta-fecha').value = hoy;
@@ -778,7 +857,6 @@
       cargarTodo();
     });
 
-    // HELPERS TEMPORALES
     function obtenerFechaLocalISO(d) {
       const year = d.getFullYear();
       const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -829,7 +907,6 @@
       }, 2300);
     }
 
-    // CARGA GENERAL
     async function cargarTodo() {
       await cargarProductos();
       await cargarHistorialVentas();
@@ -841,7 +918,6 @@
       actualizarRankingProductos();
     }
 
-    // PESTAÑAS
     function cambiarTab(tabName, btn) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => {
@@ -865,7 +941,6 @@
       document.getElementById('campo-nuevo-gasto-categoria').classList.toggle('hidden', val !== '__NUEVO__');
     }
 
-    // NAVEGACIÓN TEMPORAL
     function cambiarModoTiempo(modo, btn) {
       modoTiempo = modo;
       document.querySelectorAll('.modo-tiempo-btn').forEach(b => {
@@ -932,7 +1007,6 @@
       }
     }
 
-    // MÉTRICAS FINANCIERAS
     function calcularMetricasFinancieras() {
       const ventasPeriodo = ventasGlobales.filter(v => coincidePeriodoActual(v.fecha || v.created_at));
 
@@ -971,7 +1045,6 @@
       document.getElementById('metric-gastos-totales').textContent = `$ ${Math.round(totalGastos).toLocaleString()}`;
     }
 
-    // RANKING DE PRODUCTOS POR PERÍODO
     function actualizarRankingProductos() {
       const cont = document.getElementById('contenedor-ranking-productos');
       const tag = document.getElementById('ranking-periodo-tag');
@@ -1023,7 +1096,6 @@
       cont.innerHTML = html;
     }
 
-    // TICKET / REMITO Y BOTÓN DE WHATSAPP
     function abrirTicket(ventaId) {
       const v = ventasGlobales.find(item => item.id == ventaId);
       if (!v) return;
@@ -1074,7 +1146,6 @@
       document.getElementById('modal-ticket').classList.add('hidden');
     }
 
-    // LEER PRODUCTOS E INVENTARIO
     async function cargarProductos() {
       const { data: productos, error } = await db.from('productos').select('*');
       if (error) console.error('Error productos:', error);
@@ -1188,7 +1259,6 @@
       cargarTodo();
     }
 
-    // REGISTRO Y GESTIÓN DE VENTAS
     async function guardarVenta() {
       const fechaVenta = document.getElementById('input-venta-fecha').value || obtenerFechaLocalISO(new Date());
       let clienteNombre = document.getElementById('select-cliente').value;
@@ -1304,7 +1374,6 @@
       cargarTodo();
     }
 
-    // REGISTRO Y GESTIÓN DE COMPRAS
     async function guardarCompra() {
       const fechaCompra = document.getElementById('input-compra-fecha').value || obtenerFechaLocalISO(new Date());
       let productoId = document.getElementById('select-compra-producto').value;
@@ -1421,7 +1490,6 @@
       cargarTodo();
     }
 
-    // REGISTRO Y GESTIÓN DE GASTOS
     function actualizarSelectCategoriasGasto() {
       const sel = document.getElementById('select-gasto-categoria');
       const base = {
@@ -1509,7 +1577,6 @@
       cargarTodo();
     }
 
-    // GESTIÓN DE CLIENTES
     async function guardarClienteDirectorio() {
       const nom = document.getElementById('input-cliente-nombre').value.trim();
       const dir = document.getElementById('input-cliente-direccion').value.trim();
@@ -1627,7 +1694,6 @@
       }
     }
 
-    // AUDITORÍA DRILL-DOWN
     function abrirDetalleFinanciero(tipo) {
       const tit = document.getElementById('modal-detalle-titulo');
       const sub = document.getElementById('modal-detalle-subtitulo');
@@ -1775,7 +1841,6 @@
       document.getElementById('modal-detalle-financiero').classList.add('hidden');
     }
 
-    // CALCULADORA DE PRECIOS
     function abrirCalculadora() {
       const sel = document.getElementById('calc-producto');
       sel.innerHTML = '<option value="">Ingresar costo manual...</option>';
@@ -1827,7 +1892,6 @@
       document.getElementById('calc-res-precio-pallet').textContent = `$ ${precioPallet.toLocaleString()}`;
     }
 
-    // EXPORTAR EXCEL
     async function exportarExcel() {
       mostrarNotificacion('Generando archivo Excel...');
       try {
